@@ -1,21 +1,14 @@
 package com.example.owo.mamn01project;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -25,17 +18,16 @@ import com.example.owo.mamn01project.LetterRecognition.Letter;
 import com.example.owo.mamn01project.LetterRecognition.LetterRecognizer;
 import com.example.owo.mamn01project.LetterRecognition.LetterRecognizerListener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class TestLetterRecognitionActivity extends AppCompatActivity {
 
     private SpeechRecognizer speechRecognizer;
     private LetterRecognizer letterRecognizer;
     private Intent speechIntent;
     private TextView textView;
+
+    private Button btnSpeak;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         textView = findViewById(R.id.textView);
-        Button btnSpeak = findViewById(R.id.btnSpeak);
+        btnSpeak = findViewById(R.id.btnSpeak);
 
         // Check permission
         Helpers.ensureAudioPermission(this);
@@ -61,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStartListening() {
                 textView.setText("Listening...");
+                setButtonState(true);
             }
             @Override
             public void onError(String errorString) {
                 textView.setText(errorString);
+                setButtonState(false);
             }
             @Override
             public void onResult(List<Letter> letters) {
@@ -73,10 +67,18 @@ public class MainActivity extends AppCompatActivity {
                         .reduce((a, b) -> a + ", " + b)
                         .orElse("No result.");
                 textView.setText(result_string);
+                setButtonState(false);
             }
         });
 
-        btnSpeak.setOnClickListener(v -> letterRecognizer.startListening());
+        btnSpeak.setOnClickListener(v -> {
+            letterRecognizer.startListening();
+            setButtonState(true);
+        });
+    }
+
+    private void setButtonState(boolean isListening) {
+        btnSpeak.setEnabled(!isListening);
     }
 
     @Override

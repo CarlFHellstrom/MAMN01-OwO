@@ -8,9 +8,12 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LetterRecognizer {
@@ -20,6 +23,10 @@ public class LetterRecognizer {
     private SpeechRecognizer speechRecognizer;
     private Intent speechIntent;
 
+    /**
+     * Simplified SpeechRecognizer wrapper for recognizing individual letters.
+     * @param activity The activity context, inside an activity, you probably want to pass "this".
+     */
     public LetterRecognizer(Activity activity){
         // Initialize SpeechRecognizer
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(activity);
@@ -85,13 +92,22 @@ public class LetterRecognizer {
         });
     }
 
-    public void setListener(LetterRecognizerListener listener) {
+    /**
+     * Sets the listener for this recognizer, which will receive callbacks when the recognizer starts listening, encounters an error, or receives a result.
+     * @param listener The listener to set, which must not be null. This unsets any previously set listener.
+     */
+    public void setListener(@NonNull LetterRecognizerListener listener) {
+        Objects.requireNonNull(listener, "Listener may not be null");
         this.listener = listener;
     }
 
+    /**
+     * Starts the recognizer listening for speech. The recognizer must have a non-null listener set before calling this method, and will throw an IllegalStateException if this is not the case.
+     * This method must be called again after results are received to listen for more speech, as the recognizer stops listening after receiving results.
+     */
     public void startListening() {
         if(listener == null) {
-            throw new IllegalStateException("Listener may not be null when starting listening");
+            throw new IllegalStateException("Listener must be set before starting listening");
         }
         speechRecognizer.startListening(speechIntent);
         listener.onStartListening();
