@@ -26,6 +26,8 @@ public class DictionaryActivity extends AppCompatActivity {
     private final List<String> groupTitles = new ArrayList<>();
     private final Map<String, List<CollectedWord>> groupedWords = new LinkedHashMap<>();
 
+    private final Map<String, ProgramStats> programStats = new LinkedHashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,7 @@ public class DictionaryActivity extends AppCompatActivity {
     private void loadDictionary() {
         groupedWords.clear();
         groupTitles.clear();
+        programStats.clear();
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
@@ -67,16 +70,22 @@ public class DictionaryActivity extends AppCompatActivity {
             if (!groupedWords.containsKey(programName)) {
                 groupedWords.put(programName, new ArrayList<>());
                 groupTitles.add(programName);
+                programStats.put(programName, new ProgramStats());
             }
 
             int wordColumnIndex = cursor.getColumnIndexOrThrow("word");
             int capturedAtColumnIndex = cursor.getColumnIndexOrThrow("captured_at");
 
-            if (!cursor.isNull(wordColumnIndex) && !cursor.isNull(capturedAtColumnIndex)) {
-                String word = cursor.getString(wordColumnIndex);
-                long capturedAt = cursor.getLong(capturedAtColumnIndex);
+            if (!cursor.isNull(wordColumnIndex)) {
+                programStats.get(programName).totalCount++;
 
-                groupedWords.get(programName).add(new CollectedWord(word, capturedAt));
+                if (!cursor.isNull(capturedAtColumnIndex)) {
+                    String word = cursor.getString(wordColumnIndex);
+                    long capturedAt = cursor.getLong(capturedAtColumnIndex);
+
+                    groupedWords.get(programName).add(new CollectedWord(word, capturedAt));
+                    programStats.get(programName).collectedCount++;
+                }
             }
         }
 
@@ -91,7 +100,7 @@ public class DictionaryActivity extends AppCompatActivity {
         }
 
         DictionaryExpandableListAdapter adapter =
-                new DictionaryExpandableListAdapter(this, groupTitles, groupedWords);
+                new DictionaryExpandableListAdapter(this, groupTitles, groupedWords, programStats);
 
         dictionaryListView.setAdapter(adapter);
 
@@ -121,6 +130,15 @@ public class DictionaryActivity extends AppCompatActivity {
         return formatter.format(date);
     }
 
+    public static class ProgramStats {
+        public int collectedCount;
+        public int totalCount;
+
+        ProgramStats() {
+            this.collectedCount = 0;
+            this.totalCount = 0;
+        }
+    }
     public static class CollectedWord {
         public String word;
         public long capturedAt;

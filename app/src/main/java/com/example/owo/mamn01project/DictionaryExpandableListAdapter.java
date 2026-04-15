@@ -16,13 +16,16 @@ public class DictionaryExpandableListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final List<String> groupTitles;
     private final Map<String, List<DictionaryActivity.CollectedWord>> groupedWords;
+    private final Map<String, DictionaryActivity.ProgramStats> programStats;
 
     public DictionaryExpandableListAdapter(Context context,
                                            List<String> groupTitles,
-                                           Map<String, List<DictionaryActivity.CollectedWord>> groupedWords) {
+                                           Map<String, List<DictionaryActivity.CollectedWord>> groupedWords,
+                                           Map<String, DictionaryActivity.ProgramStats> programStats ) {
         this.context = context;
         this.groupTitles = groupTitles;
         this.groupedWords = groupedWords;
+        this.programStats = programStats;
     }
 
     @Override
@@ -37,7 +40,14 @@ public class DictionaryExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getGroup(int groupPosition) {
-        return groupTitles.get(groupPosition);
+        String programName = groupTitles.get(groupPosition);
+        DictionaryActivity.ProgramStats stats = programStats.get(programName);
+
+        if (stats != null) {
+            return programName + " (" + stats.collectedCount + "/" + stats.totalCount + ")";
+        }
+
+        return programName;
     }
 
     @Override
@@ -66,7 +76,15 @@ public class DictionaryExpandableListAdapter extends BaseExpandableListAdapter {
         textView.setPadding(60, 32, 32, 32);
         textView.setTextSize(20);
         textView.setTypeface(null, Typeface.BOLD);
-        textView.setText(groupTitles.get(groupPosition));
+        String programName = groupTitles.get(groupPosition);
+        DictionaryActivity.ProgramStats stats = programStats.get(programName);
+
+        String titleText = programName;
+        if (stats != null) {
+            titleText = programName + " (" + stats.collectedCount + "/" + stats.totalCount + ")";
+        }
+
+        textView.setText((String) getGroup(groupPosition));
         textView.setTextColor(context.getColor(R.color.dark_green));
         textView.setBackgroundColor(context.getColor(R.color.sage_green));
         return textView;

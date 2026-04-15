@@ -42,6 +42,7 @@ public class DictionaryActivityTest {
         assertTrue(groupCount.get() > 0);
     }
 
+
     @Test
     public void emptyProgram_showsNoCollectedWordsYet() {
         try (ActivityScenario<DictionaryActivity> scenario =
@@ -77,6 +78,35 @@ public class DictionaryActivityTest {
                     throw new AssertionError(
                             "No placeholder row found for empty programs."
                     );
+                }
+            });
+        }
+    }
+
+    @Test
+    public void programTitles_showCollectedOutOfTotalCounts() {
+        try (ActivityScenario<DictionaryActivity> scenario = ActivityScenario.launch(DictionaryActivity.class)) {
+            scenario.onActivity(activity -> {
+                ExpandableListView listView = activity.findViewById(R.id.dictionaryListView);
+                var adapter = listView.getExpandableListAdapter();
+
+                boolean foundProgramWithCounts = false;
+
+                for (int group = 0; group < adapter.getGroupCount(); group++) {
+                    Object groupObject = adapter.getGroup(group);
+
+                    if (groupObject instanceof String) {
+                        String title = (String) groupObject;
+
+                        if (title.matches(".*\\(\\d+/\\d+\\)$")) {
+                            foundProgramWithCounts = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!foundProgramWithCounts) {
+                    throw new AssertionError("No program title contained collected/total counts.");
                 }
             });
         }
