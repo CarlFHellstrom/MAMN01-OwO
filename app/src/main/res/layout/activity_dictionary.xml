@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dictionaryRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/sage_green"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/dictionaryTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="12dp"
+        android:text="Dictionary"
+        android:textColor="@color/dark_green"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <ExpandableListView
+        android:id="@+id/dictionaryListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/forest_green"
+        android:dividerHeight="1dp" />
+
+</LinearLayout>

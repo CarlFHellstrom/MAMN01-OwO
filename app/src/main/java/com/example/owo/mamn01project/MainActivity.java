@@ -1,11 +1,7 @@
 package com.example.owo.mamn01project;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.widget.Button;
@@ -50,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         textView = findViewById(R.id.textView);
         Button btnSpeak = findViewById(R.id.btnSpeak);
+        Button btnDictionary = findViewById(R.id.btnDictionary);
 
         // Check permission
         Helpers.ensureAudioPermission(this);
@@ -77,6 +74,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnSpeak.setOnClickListener(v -> letterRecognizer.startListening());
+
+        btnDictionary.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, DictionaryActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,6 +66,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             throw new RuntimeException("Failed to read android_migration.sql", e);
         }
+    }
+
+    public void saveCollectedWord(String playerId, String word) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT id FROM words WHERE word = ? COLLATE NOCASE",
+                new String[]{word}
+        );
+
+        if (!cursor.moveToFirst()) {
+            cursor.close();
+            return;
+        }
+
+        int wordId = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
+        cursor.close();
+
+        ContentValues values = new ContentValues();
+        values.put("player_id", playerId);
+        values.put("word_id", wordId);
+
+        db.insertWithOnConflict(
+                "dictionary",
+                null,
+                values,
+                SQLiteDatabase.CONFLICT_IGNORE
+        );
     }
 
 }
