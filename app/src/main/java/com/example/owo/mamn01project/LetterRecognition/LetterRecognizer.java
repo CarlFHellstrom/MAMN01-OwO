@@ -112,4 +112,11 @@ public class LetterRecognizer {
         speechRecognizer.startListening(speechIntent);
         listener.onStartListening();
     }
+
+    /**
+     * Releases resources used by the recognizer. This should be called when the recognizer is no longer needed, such as in the onDestroy method of an activity.
+     */
+    public void destroy() {
+        speechRecognizer.destroy();
+    }
 }

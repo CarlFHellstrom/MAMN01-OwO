@@ -37,4 +37,12 @@ public class Word {
     public String toString() {
         return letters.stream().map(Enum::name).collect(Collectors.joining());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Word word = (Word) o;
+        return letters.equals(word.letters);
+    }
 }
