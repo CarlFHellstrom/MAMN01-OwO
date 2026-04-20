@@ -86,7 +86,13 @@
         android:layout_marginTop="310dp"
         android:src="@drawable/w"/>
 
-
+    <ImageView
+        android:id="@+id/selectionCircle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/circle"/>
 
     <!-- TUTORIAL OVERLAY -->
     <FrameLayout

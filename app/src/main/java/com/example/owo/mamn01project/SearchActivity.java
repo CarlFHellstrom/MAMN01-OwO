@@ -3,6 +3,7 @@ package com.example.owo.mamn01project;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -16,6 +17,10 @@ import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
 
+    private ImageView selectionCircle;
+
+    private ImageView[] letters;
+    private int selectedIndex = 0;
     private View overlay;
     private View dim;
     private View card;
@@ -24,10 +29,6 @@ public class SearchActivity extends AppCompatActivity {
     private TextView tutorialBody;
 
     private View rowSkipView;
-    private View rowBackNext;
-
-    private Button btnBack;
-    private Button btnNext;
 
     private int stepIndex = -1;
 
@@ -48,6 +49,19 @@ public class SearchActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        selectionCircle = findViewById(R.id.selectionCircle);
+
+        letters = new ImageView[] {
+                findViewById(R.id.letterF),
+                findViewById(R.id.letterK),
+                findViewById(R.id.letterM),
+                findViewById(R.id.letterA),
+                findViewById(R.id.letterI),
+                findViewById(R.id.letterD),
+                findViewById(R.id.letterE),
+                findViewById(R.id.letterV),
+                findViewById(R.id.letterW)
+        };
 
         overlay = findViewById(R.id.tutorialOverlay);
         dim = findViewById(R.id.tutorialDim);
@@ -57,14 +71,10 @@ public class SearchActivity extends AppCompatActivity {
         tutorialBody = findViewById(R.id.tutorialBody);
 
         rowSkipView = findViewById(R.id.rowSkipView);
-        rowBackNext = findViewById(R.id.rowBackNext);
 
         View btnClose = findViewById(R.id.btnClose);
         View btnSkip = findViewById(R.id.btnSkip);
         View btnView = findViewById(R.id.btnView);
-
-        btnBack = findViewById(R.id.btnBack);
-        btnNext = findViewById(R.id.btnNext);
 
         showTutorialIntro(true);
 
@@ -72,18 +82,9 @@ public class SearchActivity extends AppCompatActivity {
         btnSkip.setOnClickListener(v -> hideTutorial());
         btnView.setOnClickListener(v -> showStep(0));
 
-        btnBack.setOnClickListener(v -> showStep(stepIndex - 1));
-
-        btnNext.setOnClickListener(v -> {
-            int next = stepIndex + 1;
-            if (next >= steps.size()) {
-                hideTutorial();
-            } else {
-                showStep(next);
-            }
-        });
 
         dim.setOnClickListener(v -> hideTutorial());
+        selectionCircle.post(this::moveSelection);
     }
 
 
@@ -95,7 +96,6 @@ public class SearchActivity extends AppCompatActivity {
         tutorialBody.setText("Welcome! Want to view the tutorial?");
 
         rowSkipView.setVisibility(View.VISIBLE);
-        rowBackNext.setVisibility(View.GONE);
 
         stepIndex = -1;
     }
@@ -115,12 +115,14 @@ public class SearchActivity extends AppCompatActivity {
         tutorialBody.setText(steps.get(index));
 
         rowSkipView.setVisibility(View.GONE);
-        rowBackNext.setVisibility(View.VISIBLE);
-
-        btnBack.setEnabled(index > 0);
-        btnNext.setText(index == steps.size() - 1 ? "Finish" : "Next");
     }
 
+    private void moveSelection() {
+        ImageView selected = letters[selectedIndex];
+
+        selectionCircle.setX(selected.getX() - 10);
+        selectionCircle.setY(selected.getY() - 10);
+    }
     private void hideTutorial() {
         overlay.setVisibility(View.GONE);
         stepIndex = -1;
