@@ -1,5 +1,9 @@
 package com.example.owo.mamn01project;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +21,9 @@ import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
 
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+
     private ImageView selectionCircle;
 
     private ImageView currentLetter;
@@ -30,6 +37,8 @@ public class SearchActivity extends AppCompatActivity {
     private TextView tutorialBody;
 
     private View rowSkipView;
+    private long lastTiltTime = 0;
+
 
     private int stepIndex = -1;
 
@@ -38,6 +47,18 @@ public class SearchActivity extends AppCompatActivity {
             "Step 2: Tap a word to catch it.",
             "Step 3: Open your dictionary to see saved words."
     );
+
+    private final SensorEventListener sensorListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float x = event.values[0];
+
+            tilt((int) x);
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {}
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +71,9 @@ public class SearchActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
         selectionCircle = findViewById(R.id.selectionCircle);
 
         letters = new ImageView[] {
@@ -90,6 +114,11 @@ public class SearchActivity extends AppCompatActivity {
         selectionCircle.post(this::moveSelection);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(sensorListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
+    }
 
     private void showTutorialIntro(boolean interactable) {
         overlay.setVisibility(View.VISIBLE);
@@ -127,6 +156,27 @@ public class SearchActivity extends AppCompatActivity {
         selectionCircle.setY(selected.getY() - 10);
         currentLetter.setImageDrawable(selected.getDrawable());
 
+    }
+
+    private void tilt(int x){
+
+        long now = System.currentTimeMillis();
+
+        if (now - lastTiltTime < 500) return;
+
+        if (x > 4) { // tilt vänster
+            selectedIndex--;
+            lastTiltTime = now;
+        } else if (x < -4) { // tilt höger
+            selectedIndex++;
+            lastTiltTime = now;
+        }
+
+        // 🔒 håll inom bounds
+        if (selectedIndex < 0) selectedIndex = 0;
+        if (selectedIndex >= letters.length) selectedIndex = letters.length - 1;
+
+        moveSelection();
     }
     private void hideTutorial() {
         overlay.setVisibility(View.GONE);
