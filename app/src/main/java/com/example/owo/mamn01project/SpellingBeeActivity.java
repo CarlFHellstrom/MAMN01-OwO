@@ -41,6 +41,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private int tries = 3;
     private TextToSpeech tts;
     private LetterRecognizer letterRecognizer;
+    private DatabaseHelper databaseHelper;
 
     private boolean won = false;
 
@@ -66,8 +67,6 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
             endLayout = findViewById(R.id.endLayout);
             gameLayout = findViewById(R.id.gameLayout);
-
-            word = new Word("SOIL");
 
             tts = new TextToSpeech(this, i -> {
                 if (i != TextToSpeech.ERROR) {
@@ -95,6 +94,13 @@ public class SpellingBeeActivity extends AppCompatActivity {
                     onFinishedSpeak(guessedWord);
                 }
             });
+
+            databaseHelper = new DatabaseHelper(this);
+
+            String section = "D";
+            String randomWord = databaseHelper.getRandomUncollectedWordForSection(DictionaryActivity.PLAYER_ID, section);
+            Log.d("SpellingBeeActivity", "Random Word Selected: " + randomWord);
+            word = new Word(randomWord);
 
             speakButton.setOnClickListener(v -> onSpeakButtonClick());
             listenButton.setOnClickListener(v -> onListenButtonClick());
@@ -137,7 +143,6 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
             endText.setText("You Win!");
             endStatusText.setText("Word Added to Collection: " + word.toString());
-            var databaseHelper = new DatabaseHelper(this);
             databaseHelper.saveCollectedWord(DictionaryActivity.PLAYER_ID, word.toString());
             won = true;
 
