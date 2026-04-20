@@ -11,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "lth_words.db";
@@ -94,6 +96,70 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values,
                 SQLiteDatabase.CONFLICT_IGNORE
         );
+    }
+
+    /**
+     * Returns a random word belonging to any program in the given section.
+     * @param sectionCode  one of "D", "K", "V", "M", "E", "F"
+     * @return the word string, or null if the section is unknown / has no words
+     */
+    public String getRandomWordForSection(String sectionCode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query =
+                "SELECT w.word FROM words w " +
+                        "JOIN word_programs wp ON wp.word_id = w.id " +
+                        "JOIN program_sections ps ON ps.program_id = wp.program_id " +
+                        "JOIN sections s ON s.id = ps.section_id " +
+                        "WHERE s.code = ? " +
+                        "ORDER BY RANDOM() LIMIT 1";
+
+        try (Cursor cursor = db.rawQuery(query, new String[]{sectionCode})) {
+            if (cursor.moveToFirst()) {
+                return cursor.getString(0);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Same as above but excludes words the player has already collected.
+     */
+    public String getRandomUncollectedWordForSection(String playerId, String sectionCode) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query =
+                "SELECT w.word FROM words w " +
+                        "JOIN word_programs wp ON wp.word_id = w.id " +
+                        "JOIN program_sections ps ON ps.program_id = wp.program_id " +
+                        "JOIN sections s ON s.id = ps.section_id " +
+                        "WHERE s.code = ? " +
+                        "AND w.id NOT IN (" +
+                        "    SELECT word_id FROM dictionary WHERE player_id = ?" +
+                        ") " +
+                        "ORDER BY RANDOM() LIMIT 1";
+
+        try (Cursor cursor = db.rawQuery(query, new String[]{sectionCode, playerId})) {
+            if (cursor.moveToFirst()) {
+                return cursor.getString(0);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns all sections as a list of Section objects.
+     */
+    public List<Section> getAllSections() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Section> sections = new ArrayList<>();
+
+        try (Cursor cursor = db.rawQuery("SELECT code, name FROM sections ORDER BY code", null)) {
+            while (cursor.moveToNext()) {
+                String code = cursor.getString(0);
+                String name = cursor.getString(1);
+                sections.add(new Section(code, name));
+            }
+        }
+        return sections;
     }
 
 }

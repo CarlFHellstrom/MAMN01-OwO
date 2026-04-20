@@ -10,6 +10,19 @@
 -- =============================================================
 
 -- ── Schema ──────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS sections (
+    id   INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT    NOT NULL UNIQUE,
+    name TEXT    NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS program_sections (
+    program_id INTEGER NOT NULL,
+    section_id INTEGER NOT NULL,
+    PRIMARY KEY (program_id, section_id),
+    FOREIGN KEY (program_id) REFERENCES programs(id) ON DELETE CASCADE,
+    FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE CASCADE
+);
 
 CREATE TABLE IF NOT EXISTS programs (
     id   INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +61,38 @@ CREATE INDEX IF NOT EXISTS idx_dictionary_player
 CREATE INDEX IF NOT EXISTS idx_word_programs_program
     ON word_programs(program_id);
 
+CREATE INDEX IF NOT EXISTS idx_program_sections_section
+    ON program_sections(section_id);
+
+-- Seed sections
+INSERT OR IGNORE INTO sections (code, name) VALUES ('D', 'Datateknik och Informations- och kommunikationsteknik');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('K', 'Kemiteknik, Bioteknik och kandidatprogrammet i livsmedelsteknik');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('V', 'Väg- och Vattenbyggnad, Lantmäteri, Brandingenjör, Riskhantering');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('M', 'Maskinteknik och Maskinteknik med teknisk design');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('E', 'Elektroteknik och Medicin och Teknik');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('F', 'Teknisk Fysik, Teknisk Matematik och Teknisk Nanovetenskap');
+-- Map programs to sections
+-- D section: D, C
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='D' AND s.code='D';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='C' AND s.code='D';
+-- K section: K, B
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='K' AND s.code='K';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='B' AND s.code='K';
+-- V section: V, L, BR, R
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='V'  AND s.code='V';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='L'  AND s.code='V';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='BR' AND s.code='V';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='R'  AND s.code='V';
+-- M section: M, MD
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='M'  AND s.code='M';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='MD' AND s.code='M';
+-- E section: E, BME
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='E'   AND s.code='E';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='BME' AND s.code='E';
+-- F section: F, Pi, N
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='F'  AND s.code='F';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='Pi' AND s.code='F';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='N'  AND s.code='F';
 -- ── Seed data ────────────────────────────────────────────────
 -- programmes
 INSERT OR IGNORE INTO programs (code, name) VALUES ('B',   'Bioteknik');
