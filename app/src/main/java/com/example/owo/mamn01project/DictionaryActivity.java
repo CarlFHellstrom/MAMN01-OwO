@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class DictionaryActivity extends AppCompatActivity {
 
-    private static final String PLAYER_ID = "local_player";
+    public static final String PLAYER_ID = "local_player";
 
     private DatabaseHelper databaseHelper;
     private ExpandableListView dictionaryListView;

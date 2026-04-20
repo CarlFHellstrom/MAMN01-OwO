@@ -8,14 +8,16 @@
     tools:context=".SpellingBeeActivity">
 
     <LinearLayout
-        android:id="@+id/GameLayout"
+        android:id="@+id/gameLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"
@@ -50,6 +52,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Start Listening 🎤" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/endLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/endText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="You Win!"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/endStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:text="Word Added to Dictionary: APPLE" />
+
+        <Button
+            android:id="@+id/continueButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Continue" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
