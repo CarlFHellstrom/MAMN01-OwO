@@ -54,13 +54,13 @@ public class SearchActivity extends AppCompatActivity {
         letters = new ImageView[] {
                 findViewById(R.id.letterF),
                 findViewById(R.id.letterK),
-                findViewById(R.id.letterM),
                 findViewById(R.id.letterA),
-                findViewById(R.id.letterI),
+                findViewById(R.id.letterW),
+                findViewById(R.id.letterV),
                 findViewById(R.id.letterD),
                 findViewById(R.id.letterE),
-                findViewById(R.id.letterV),
-                findViewById(R.id.letterW)
+                findViewById(R.id.letterM),
+                findViewById(R.id.letterI)
         };
 
         overlay = findViewById(R.id.tutorialOverlay);
