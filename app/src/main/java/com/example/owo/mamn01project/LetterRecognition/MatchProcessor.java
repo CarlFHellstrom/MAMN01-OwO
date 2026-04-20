@@ -7,13 +7,14 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-public class MatchProcessor {
+ class MatchProcessor {
 
     private MatchProcessor() {}
     public static List<Letter> processMatch(String raw_match) {
         List<String> processed_match = Arrays.asList(raw_match.split(" "));
-        processed_match = splitStickyLetters(processed_match);
+
+        processed_match = splitAcronyms(processed_match);
+        processed_match = splitStickyUppercaseLetters(processed_match);
         processed_match = replaceHomophones(processed_match);
         processed_match = extractFirstLetters(processed_match);
 
@@ -44,6 +45,8 @@ public class MatchProcessor {
                     return "J";
                 case "SAID":
                     return "Z";
+                case "HEY":
+                    return "H";
                 default:
                     return s;
             }
@@ -54,15 +57,45 @@ public class MatchProcessor {
     /*
     *  This function splits strings such as "ABC" and "JK" into letters.
     */
-    private static List<String> splitStickyLetters(List<String> list) {
+    private static List<String> splitStickyUppercaseLetters(List<String> list) {
         return list.stream()
                 .flatMap(string -> {
-                    var isSticky = Arrays.stream(string.split("")).allMatch(s -> s.equals(s.toUpperCase()));
+                    var isSticky = string.equals(string.toUpperCase());
                     if(isSticky) {
-                        return Arrays.stream(string.split(" "));
+                        return Arrays.stream(string.split(""));
                     } else {
                         return Stream.of(string);
                     }
                 }).collect(Collectors.toList());
     }
+
+    /*
+    * Split acronyms. Such as "JK", "HTML", "pqr", "tqr".
+     */
+     private static List<String> splitAcronyms(List<String> list) {
+         List<String> acronyms = Arrays.asList(
+                 "JK",
+                 "PQR",
+                 "TQR",
+                 "IMO",
+                 "P.M.",
+                 "OOP",
+                 "NTL",
+                 "HTTP",
+                 "HTTPS",
+                 "IAAS",
+                 "ERP",
+                 "ROI",
+                 "PFP",
+                 "PHD"
+         );
+            return list.stream()
+                    .flatMap(string -> {
+                        if (acronyms.contains(string.toUpperCase())) {
+                            return Arrays.stream(string.toUpperCase().split(""));
+                        } else {
+                            return Stream.of(string);
+                        }
+                    }).collect(Collectors.toList());
+     }
 }
