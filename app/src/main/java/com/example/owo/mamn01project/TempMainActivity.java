@@ -2,6 +2,7 @@ package com.example.owo.mamn01project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -44,7 +45,15 @@ public class TempMainActivity extends AppCompatActivity {
         Helpers.ensureAudioPermission(this);
 
         btnSpellingBee.setOnClickListener(v -> {
+            var databaseHelper = new DatabaseHelper(this);
+            String section = "D";
+            String randomWord = databaseHelper.getRandomUncollectedWordForSection(DictionaryActivity.PLAYER_ID, section);
+            Log.d("TempMainActivity", "Random Word Selected: " + randomWord);
+
+            Bundle b = new Bundle();
+            b.putString("spellingBeeWord", randomWord);
             Intent intent = new Intent(TempMainActivity.this, SpellingBeeActivity.class);
+            intent.putExtras(b);
             startActivity(intent);
         });
 

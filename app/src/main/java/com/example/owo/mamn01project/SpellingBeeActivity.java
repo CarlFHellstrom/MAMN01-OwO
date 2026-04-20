@@ -97,19 +97,19 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
             databaseHelper = new DatabaseHelper(this);
 
-            String section = "D";
-            String randomWord = databaseHelper.getRandomUncollectedWordForSection(DictionaryActivity.PLAYER_ID, section);
-            Log.d("SpellingBeeActivity", "Random Word Selected: " + randomWord);
-            word = new Word(randomWord);
+            Bundle b = getIntent().getExtras();
+            if(b == null) throw new IllegalStateException("Bundle may not be null");
+            String givenWord = b.getString("spellingBeeWord", "SOIL");
+            word = new Word(givenWord);
 
             speakButton.setOnClickListener(v -> onSpeakButtonClick());
             listenButton.setOnClickListener(v -> onListenButtonClick());
 
             continueButton.setOnClickListener(v -> {
                 if(won) {
-                    finish();
                     var intent = new Intent(SpellingBeeActivity.this, DictionaryActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     finish();
                 }
