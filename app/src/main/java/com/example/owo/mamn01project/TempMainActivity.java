@@ -2,7 +2,6 @@ package com.example.owo.mamn01project;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.speech.SpeechRecognizer;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,21 +19,17 @@ import com.example.owo.mamn01project.LetterRecognition.LetterRecognizerListener;
 
 import java.util.List;
 
-public class TestLetterRecognitionActivity extends AppCompatActivity {
-
-    private SpeechRecognizer speechRecognizer;
-    private LetterRecognizer letterRecognizer;
-    private Intent speechIntent;
+public class TempMainActivity extends AppCompatActivity {
     private TextView textView;
 
-    private Button btnSpeak;
+    private Button btnSpellingBee;
     private Button btnDictionary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_temp_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -42,58 +37,21 @@ public class TestLetterRecognitionActivity extends AppCompatActivity {
         });
 
         textView = findViewById(R.id.textView);
-        btnSpeak = findViewById(R.id.btnSpeak);
+        btnSpellingBee = findViewById(R.id.btnSpeak);
         btnDictionary = findViewById(R.id.btnDictionary);
 
         // Check permission
         Helpers.ensureAudioPermission(this);
 
-        // Initialise LetterRecognizer
-        letterRecognizer = new LetterRecognizer(this);
-
-        letterRecognizer.setListener(new LetterRecognizerListener() {
-            @Override
-            public void onStartListening() {
-                textView.setText("Listening...");
-                setButtonState(true);
-            }
-            @Override
-            public void onError(String errorString) {
-                textView.setText(errorString);
-                setButtonState(false);
-            }
-            @Override
-            public void onResult(List<Letter> letters) {
-                var result_string = letters.stream()
-                        .map(Letter::toString)
-                        .reduce((a, b) -> a + ", " + b)
-                        .orElse("No result.");
-                textView.setText(result_string);
-                setButtonState(false);
-            }
-        });
-
-        btnSpeak.setOnClickListener(v -> {
-            letterRecognizer.startListening();
-            setButtonState(true);
+        btnSpellingBee.setOnClickListener(v -> {
+            Intent intent = new Intent(TempMainActivity.this, SpellingBeeActivity.class);
+            startActivity(intent);
         });
 
         btnDictionary.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, DictionaryActivity.class);
+            Intent intent = new Intent(TempMainActivity.this, DictionaryActivity.class);
             startActivity(intent);
         });
-    }
-
-    private void setButtonState(boolean isListening) {
-        btnSpeak.setEnabled(!isListening);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (speechRecognizer != null) {
-            speechRecognizer.destroy();
-        }
     }
 
     @Override
