@@ -16,14 +16,6 @@ CREATE TABLE IF NOT EXISTS sections (
     name TEXT    NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS program_sections (
-    program_id INTEGER NOT NULL,
-    section_id INTEGER NOT NULL,
-    PRIMARY KEY (program_id, section_id),
-    FOREIGN KEY (program_id) REFERENCES programs(id) ON DELETE CASCADE,
-    FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS programs (
     id   INTEGER PRIMARY KEY AUTOINCREMENT,
     code TEXT    NOT NULL UNIQUE,
@@ -61,9 +53,6 @@ CREATE INDEX IF NOT EXISTS idx_dictionary_player
 CREATE INDEX IF NOT EXISTS idx_word_programs_program
     ON word_programs(program_id);
 
-CREATE INDEX IF NOT EXISTS idx_program_sections_section
-    ON program_sections(section_id);
-
 -- Seed sections
 INSERT OR IGNORE INTO sections (code, name) VALUES ('D', 'Datateknik och Informations- och kommunikationsteknik');
 INSERT OR IGNORE INTO sections (code, name) VALUES ('K', 'Kemiteknik, Bioteknik och kandidatprogrammet i livsmedelsteknik');
@@ -71,6 +60,37 @@ INSERT OR IGNORE INTO sections (code, name) VALUES ('V', 'Väg- och Vattenbyggna
 INSERT OR IGNORE INTO sections (code, name) VALUES ('M', 'Maskinteknik och Maskinteknik med teknisk design');
 INSERT OR IGNORE INTO sections (code, name) VALUES ('E', 'Elektroteknik och Medicin och Teknik');
 INSERT OR IGNORE INTO sections (code, name) VALUES ('F', 'Teknisk Fysik, Teknisk Matematik och Teknisk Nanovetenskap');
+-- ── Seed data ────────────────────────────────────────────────
+-- programmes
+INSERT OR IGNORE INTO programs (code, name) VALUES ('B',   'Bioteknik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('BME', 'Medicin och teknik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('BR',  'Brandteknik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('C',   'Informations- och kommunikationsteknik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('D',   'Datateknik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('E',   'Elektroteknik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('F',   'Teknisk fysik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('I',   'Industriell ekonomi');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('K',   'Kemiteknik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('L',   'Lantmateri');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('M',   'Maskinteknik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('MD',  'Maskinteknik med teknisk design');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('N',   'Teknisk nanovetenskap');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('Pi',  'Teknisk matematik');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('R',   'Risk, sakerhet och krishantering');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('V',   'Vag- och vattenbyggnad');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('W',   'Ekosystemteknik');
+
+CREATE TABLE IF NOT EXISTS program_sections (
+    program_id INTEGER NOT NULL,
+    section_id INTEGER NOT NULL,
+    PRIMARY KEY (program_id, section_id),
+    FOREIGN KEY (program_id) REFERENCES programs(id) ON DELETE CASCADE,
+    FOREIGN KEY (section_id) REFERENCES sections(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_program_sections_section
+    ON program_sections(section_id);
+
 -- Map programs to sections
 -- D section: D, C
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='D' AND s.code='D';
@@ -93,26 +113,6 @@ INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sectio
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='F'  AND s.code='F';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='Pi' AND s.code='F';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='N'  AND s.code='F';
--- ── Seed data ────────────────────────────────────────────────
--- programmes
-INSERT OR IGNORE INTO programs (code, name) VALUES ('B',   'Bioteknik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('BME', 'Medicin och teknik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('BR',  'Brandteknik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('C',   'Informations- och kommunikationsteknik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('D',   'Datateknik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('E',   'Elektroteknik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('F',   'Teknisk fysik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('I',   'Industriell ekonomi');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('K',   'Kemiteknik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('L',   'Lantmateri');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('M',   'Maskinteknik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('MD',  'Maskinteknik med teknisk design');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('N',   'Teknisk nanovetenskap');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('Pi',  'Teknisk matematik');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('R',   'Risk, sakerhet och krishantering');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('V',   'Vag- och vattenbyggnad');
-INSERT OR IGNORE INTO programs (code, name) VALUES ('W',   'Ekosystemteknik');
-
 -- ── words (unique set) ───────────────────────────────────────
 INSERT OR IGNORE INTO words (word) VALUES ('Absorption');
 INSERT OR IGNORE INTO words (word) VALUES ('Accounting');

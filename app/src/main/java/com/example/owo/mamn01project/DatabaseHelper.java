@@ -16,7 +16,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "lth_words.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private final Context context;
 
@@ -34,8 +34,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS dictionary");
         db.execSQL("DROP TABLE IF EXISTS word_programs");
+        db.execSQL("DROP TABLE IF EXISTS program_sections");
         db.execSQL("DROP TABLE IF EXISTS words");
         db.execSQL("DROP TABLE IF EXISTS programs");
+        db.execSQL("DROP TABLE IF EXISTS sections");
         onCreate(db);
     }
 
