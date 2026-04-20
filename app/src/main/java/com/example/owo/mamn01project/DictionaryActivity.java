@@ -36,15 +36,7 @@ public class DictionaryActivity extends AppCompatActivity {
         dictionaryListView = findViewById(R.id.dictionaryListView);
         databaseHelper = new DatabaseHelper(this);
 
-        insertTemporaryTestWords();
         loadDictionary();
-    }
-
-    private void insertTemporaryTestWords() {
-        databaseHelper.saveCollectedWord(PLAYER_ID, "Interface");
-        databaseHelper.saveCollectedWord(PLAYER_ID, "Database");
-        databaseHelper.saveCollectedWord(PLAYER_ID, "Circuit");
-        databaseHelper.saveCollectedWord(PLAYER_ID, "Signal");
     }
 
     private void loadDictionary() {
