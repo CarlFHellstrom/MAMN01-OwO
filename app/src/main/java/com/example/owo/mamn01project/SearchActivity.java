@@ -19,6 +19,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private ImageView selectionCircle;
 
+    private ImageView currentLetter;
     private ImageView[] letters;
     private int selectedIndex = 0;
     private View overlay;
@@ -62,6 +63,8 @@ public class SearchActivity extends AppCompatActivity {
                 findViewById(R.id.letterM),
                 findViewById(R.id.letterI)
         };
+
+        currentLetter = findViewById(R.id.currentLetter);
 
         overlay = findViewById(R.id.tutorialOverlay);
         dim = findViewById(R.id.tutorialDim);
@@ -122,6 +125,8 @@ public class SearchActivity extends AppCompatActivity {
 
         selectionCircle.setX(selected.getX() - 10);
         selectionCircle.setY(selected.getY() - 10);
+        currentLetter.setImageDrawable(selected.getDrawable());
+
     }
     private void hideTutorial() {
         overlay.setVisibility(View.GONE);
