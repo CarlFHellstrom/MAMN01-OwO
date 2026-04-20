@@ -1,10 +1,13 @@
 package com.example.owo.mamn01project;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -18,8 +21,6 @@ import com.example.owo.mamn01project.LetterRecognition.LetterRecognizer;
 import com.example.owo.mamn01project.LetterRecognition.LetterRecognizerListener;
 import com.example.owo.mamn01project.SpellingBeeGame.Word;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -29,10 +30,20 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private Button listenButton;
     private TextView playerGuess;
     private TextView triesLeft;
+
+    private TextView endText;
+    private TextView endStatusText;
+    private Button continueButton;
+
+    private LinearLayout gameLayout;
+    private LinearLayout endLayout;
     private Word word;
     private int tries = 3;
     private TextToSpeech tts;
     private LetterRecognizer letterRecognizer;
+    private DatabaseHelper databaseHelper;
+
+    private boolean won = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +61,12 @@ public class SpellingBeeActivity extends AppCompatActivity {
             playerGuess = findViewById(R.id.playerGuess);
             triesLeft = findViewById(R.id.triesLeft);
 
-            word = new Word("HOME");
+            endText = findViewById(R.id.endText);
+            endStatusText = findViewById(R.id.endStatusText);
+            continueButton = findViewById(R.id.continueButton);
+
+            endLayout = findViewById(R.id.endLayout);
+            gameLayout = findViewById(R.id.gameLayout);
 
             tts = new TextToSpeech(this, i -> {
                 if (i != TextToSpeech.ERROR) {
@@ -79,8 +95,25 @@ public class SpellingBeeActivity extends AppCompatActivity {
                 }
             });
 
+            databaseHelper = new DatabaseHelper(this);
+
+            String section = "D";
+            String randomWord = databaseHelper.getRandomUncollectedWordForSection(DictionaryActivity.PLAYER_ID, section);
+            Log.d("SpellingBeeActivity", "Random Word Selected: " + randomWord);
+            word = new Word(randomWord);
+
             speakButton.setOnClickListener(v -> onSpeakButtonClick());
             listenButton.setOnClickListener(v -> onListenButtonClick());
+
+            continueButton.setOnClickListener(v -> {
+                if(won) {
+                    finish();
+                    var intent = new Intent(SpellingBeeActivity.this, DictionaryActivity.class);
+                    startActivity(intent);
+                } else {
+                    finish();
+                }
+            });
     }
 
     private void onSpeakButtonClick() {
@@ -107,6 +140,15 @@ public class SpellingBeeActivity extends AppCompatActivity {
             playerGuess.setText("Correct: " + guessedWord);
             playerGuess.setTextColor(Color.GREEN);
             speakButton.setEnabled(false);
+
+            endText.setText("You Win!");
+            endStatusText.setText("Word Added to Collection: " + word.toString());
+            databaseHelper.saveCollectedWord(DictionaryActivity.PLAYER_ID, word.toString());
+            won = true;
+
+            gameLayout.setVisibility(View.GONE);
+            endLayout.setVisibility(View.VISIBLE);
+
         } else {
             // Player Guessed Incorrectly
             playerGuess.setText("Incorrect: " + guessedWord);
@@ -116,6 +158,13 @@ public class SpellingBeeActivity extends AppCompatActivity {
                 // Player Loses
                 playerGuess.setText("Game Over! The word was: " + word.toString());
                 speakButton.setEnabled(false);
+
+                endText.setText("You Lose!");
+                endStatusText.setText("The Word was: " + word.toString());
+                won = false;
+
+                gameLayout.setVisibility(View.GONE);
+                endLayout.setVisibility(View.VISIBLE);
             } else if (tries == 1) {
                 triesLeft.setText("1 try left!");
             } else {

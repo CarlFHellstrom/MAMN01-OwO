@@ -17,15 +17,19 @@
         <activity
             android:name=".SpellingBeeActivity"
             android:exported="true" >
+        </activity>
+        <activity
+            android:name=".DictionaryActivity"
+            android:exported="true" />
+        <activity
+            android:name=".TempMainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".TestLetterRecognitionActivity"
-            android:exported="false" />
     </application>
 
 </manifest>
