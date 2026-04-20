@@ -1,10 +1,13 @@
 package com.example.owo.mamn01project;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,6 +26,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
+    private Vibrator vibrator;
 
     private ImageView selectionCircle;
 
@@ -73,6 +77,7 @@ public class SearchActivity extends AppCompatActivity {
         });
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         selectionCircle = findViewById(R.id.selectionCircle);
 
@@ -155,28 +160,40 @@ public class SearchActivity extends AppCompatActivity {
         selectionCircle.setX(selected.getX() - 10);
         selectionCircle.setY(selected.getY() - 10);
         currentLetter.setImageDrawable(selected.getDrawable());
-
     }
 
+    private void vibrate() {
+        if (vibrator != null && vibrator.hasVibrator()) {
+            vibrator.vibrate(
+                    VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE)
+            );
+        }
+    }
     private void tilt(int x){
 
         long now = System.currentTimeMillis();
 
         if (now - lastTiltTime < 500) return;
 
-        if (x > 4) { // tilt vänster
+        boolean moved = false;
+
+        if (x > 4) {
             selectedIndex--;
-            lastTiltTime = now;
-        } else if (x < -4) { // tilt höger
+            moved = true;
+        } else if (x < -4) {
             selectedIndex++;
-            lastTiltTime = now;
+            moved = true;
         }
 
-        // 🔒 håll inom bounds
+        // bounds
         if (selectedIndex < 0) selectedIndex = 0;
         if (selectedIndex >= letters.length) selectedIndex = letters.length - 1;
 
-        moveSelection();
+        if (moved) {
+            lastTiltTime = now;
+            vibrate();
+            moveSelection();
+        }
     }
     private void hideTutorial() {
         overlay.setVisibility(View.GONE);
