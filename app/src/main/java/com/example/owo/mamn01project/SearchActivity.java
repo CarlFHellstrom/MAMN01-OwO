@@ -30,7 +30,8 @@ public class SearchActivity extends AppCompatActivity {
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Vibrator vibrator;
-
+    private ImageView selectedLetterCenter;
+    private View selectedLetterContainer;
     //test
     private ProgressBar selectionProgress;
     private Handler handler = new Handler();
@@ -105,6 +106,8 @@ public class SearchActivity extends AppCompatActivity {
         };
 
         currentLetter = findViewById(R.id.currentLetter);
+        selectedLetterCenter = findViewById(R.id.selectedLetterCenter);
+        selectedLetterContainer = findViewById(R.id.selectedLetterContainer);
 
         //test
         selectionProgress = findViewById(R.id.selectionProgress);
@@ -216,8 +219,8 @@ public class SearchActivity extends AppCompatActivity {
             vibrate();
             moveSelection();
 
-            resetSelectionProgress();   // ❗ viktigt
-            startSelectionProgress();   // ❗ starta ny
+            resetSelectionProgress();
+            startSelectionProgress();
         }
     }
     private void hideTutorial() {
@@ -240,8 +243,10 @@ public class SearchActivity extends AppCompatActivity {
                 selectionProgress.setProgress(progress);
 
                 if (progress >= 100) {
-                    vibrate();
-                    startGame("section_" + selectedIndex);
+                    vibrator.vibrate(VibrationEffect.createOneShot(100, 200));
+
+                    showSelectedLetter();
+
                     return;
                 }
 
@@ -252,6 +257,12 @@ public class SearchActivity extends AppCompatActivity {
         handler.postDelayed(progressRunnable, 50);
     }
 
+    private void showSelectedLetter() {
+        ImageView selected = letters[selectedIndex];
+
+        selectedLetterCenter.setImageDrawable(selected.getDrawable());
+        selectedLetterContainer.setVisibility(View.VISIBLE);
+    }
     private void resetSelectionProgress() {
         handler.removeCallbacks(progressRunnable);
         progress = 0;

@@ -122,6 +122,23 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/selectedLetterContainer"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="#FFFFFF"
+        android:padding="24dp">
+
+        <ImageView
+            android:id="@+id/selectedLetterCenter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"/>
+
+    </FrameLayout>
+
     <!-- TUTORIAL OVERLAY -->
     <FrameLayout
         android:id="@+id/tutorialOverlay"
@@ -210,6 +227,8 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
+
+
 
     </FrameLayout>
 
