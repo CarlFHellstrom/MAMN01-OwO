@@ -63,6 +63,7 @@ public class SearchActivity extends AppCompatActivity {
     private View rowSkipView;
     private long lastTiltTime = 0;
 
+    private boolean doneSelecting = false;
 
     private int stepIndex = -1;
 
@@ -200,6 +201,7 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
     private void tilt(int x){
+        if (doneSelecting) return;
 
         long now = System.currentTimeMillis();
 
@@ -248,7 +250,6 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = new Intent(SearchActivity.this, SpellingBeeActivity.class);
         intent.putExtras(b);
         startActivity(intent);
-        finish();
     }
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -264,12 +265,15 @@ public class SearchActivity extends AppCompatActivity {
         progressRunnable = new Runnable() {
             @Override
             public void run() {
+                if(doneSelecting) return;
+
                 progress += 2;
                 selectionProgress.setProgress(progress);
 
                 if (progress >= 100) {
                     vibrator.vibrate(VibrationEffect.createOneShot(100, 200));
 
+                    doneSelecting = true;
                     showSelectedLetter();
 
                     return;
