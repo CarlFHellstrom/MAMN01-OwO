@@ -44,6 +44,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private ImageView currentLetter;
     private ImageView[] letters;
+
+    private String[] letterValues;
     private int selectedIndex = 0;
     private View overlay;
     private View dim;
@@ -105,6 +107,10 @@ public class SearchActivity extends AppCompatActivity {
                 findViewById(R.id.letterI)
         };
 
+        final String[] letterValues = {
+                "F", "K", "W", "A", "V", "D", "E", "M", "I"
+        };
+
         currentLetter = findViewById(R.id.currentLetter);
         selectedLetterCenter = findViewById(R.id.selectedLetterCenter);
         selectedLetterContainer = findViewById(R.id.selectedLetterContainer);
@@ -134,10 +140,7 @@ public class SearchActivity extends AppCompatActivity {
 
         dim.setOnClickListener(v -> hideTutorial());
         selectionCircle.post(this::moveSelection);
-        selectionCircle.post(() -> {
-            moveSelection();
-            startSelectionProgress();
-        });
+        moveSelection();
     }
 
     @Override
@@ -262,6 +265,9 @@ public class SearchActivity extends AppCompatActivity {
 
         selectedLetterCenter.setImageDrawable(selected.getDrawable());
         selectedLetterContainer.setVisibility(View.VISIBLE);
+        String selectedLetter = letterValues[selectedIndex];
+
+        startGame(selectedLetter);
     }
     private void resetSelectionProgress() {
         handler.removeCallbacks(progressRunnable);
