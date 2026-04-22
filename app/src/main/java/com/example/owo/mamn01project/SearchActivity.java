@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -186,8 +187,11 @@ public class SearchActivity extends AppCompatActivity {
         }
 
         // bounds
-        if (selectedIndex < 0) selectedIndex = 0;
-        if (selectedIndex >= letters.length) selectedIndex = letters.length - 1;
+        if (selectedIndex < 0) {
+            selectedIndex = letters.length - 1; // hoppa till sista (I)
+        } else if (selectedIndex >= letters.length) {
+            selectedIndex = 0; // hoppa till första (F)
+        }
 
         if (moved) {
             lastTiltTime = now;
@@ -198,6 +202,10 @@ public class SearchActivity extends AppCompatActivity {
     private void hideTutorial() {
         overlay.setVisibility(View.GONE);
         stepIndex = -1;
+    }
+
+    private void startGame(String section)  {
+        Log.d("SearchActivity", "Starting Game with Section " + section);
     }
 
     private void setOverlayInteractable(boolean interactable) {
