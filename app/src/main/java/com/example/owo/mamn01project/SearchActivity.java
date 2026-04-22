@@ -1,6 +1,7 @@
 package com.example.owo.mamn01project;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,10 +18,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.owo.mamn01project.LetterRecognition.Helpers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +49,9 @@ public class SearchActivity extends AppCompatActivity {
     private ImageView currentLetter;
     private ImageView[] letters;
 
-    private String[] letterValues;
+    private final String[] letterValues = {
+            "F", "K", "W", "A", "V", "D", "E", "M", "I"
+    };
     private int selectedIndex = 0;
     private View overlay;
     private View dim;
@@ -89,6 +95,10 @@ public class SearchActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Ensure permissions
+        Helpers.ensureAudioPermission(this);
+
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -105,10 +115,6 @@ public class SearchActivity extends AppCompatActivity {
                 findViewById(R.id.letterE),
                 findViewById(R.id.letterM),
                 findViewById(R.id.letterI)
-        };
-
-        final String[] letterValues = {
-                "F", "K", "W", "A", "V", "D", "E", "M", "I"
         };
 
         currentLetter = findViewById(R.id.currentLetter);
@@ -233,6 +239,22 @@ public class SearchActivity extends AppCompatActivity {
 
     private void startGame(String section)  {
         Log.d("SearchActivity", "Starting Game with Section " + section);
+        var databaseHelper = new DatabaseHelper(this);
+        String randomWord = databaseHelper.getRandomUncollectedWordForSection(DictionaryActivity.PLAYER_ID, section);
+        Log.d("SearchActivity", "Random Word Selected: " + randomWord);
+
+        Bundle b = new Bundle();
+        b.putString("spellingBeeWord", randomWord);
+        Intent intent = new Intent(SearchActivity.this, SpellingBeeActivity.class);
+        intent.putExtras(b);
+        startActivity(intent);
+        finish();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
     private void startSelectionProgress() {
         handler.removeCallbacks(progressRunnable);
@@ -265,6 +287,7 @@ public class SearchActivity extends AppCompatActivity {
 
         selectedLetterCenter.setImageDrawable(selected.getDrawable());
         selectedLetterContainer.setVisibility(View.VISIBLE);
+        System.out.println(selectedIndex);
         String selectedLetter = letterValues[selectedIndex];
 
         startGame(selectedLetter);
