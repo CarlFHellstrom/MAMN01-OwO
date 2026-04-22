@@ -73,7 +73,7 @@ public class DictionaryExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         TextView textView = new TextView(context);
-        textView.setPadding(60, 32, 32, 32);
+        textView.setPadding(80, 32, 32, 32);
         textView.setTextSize(20);
         textView.setTypeface(null, Typeface.BOLD);
         String programName = groupTitles.get(groupPosition);
