@@ -47,36 +47,39 @@ public class DictionaryActivity extends AppCompatActivity {
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(
-                "SELECT p.name AS program_name, w.word AS word, d.captured_at AS captured_at " +
-                        "FROM programs p " +
-                        "LEFT JOIN word_programs wp ON p.id = wp.program_id " +
-                        "LEFT JOIN words w ON wp.word_id = w.id " +
+                "SELECT s.name AS section_name, w.word AS word, d.captured_at AS captured_at " +
+                        "FROM sections s " +
+                        "LEFT JOIN program_sections ps ON ps.section_id = s.id " +
+                        "LEFT JOIN programs p ON p.id = ps.program_id " +
+                        "LEFT JOIN word_programs wp ON wp.program_id = p.id " +
+                        "LEFT JOIN words w ON w.id = wp.word_id " +
                         "LEFT JOIN dictionary d ON d.word_id = w.id AND d.player_id = ? " +
-                        "ORDER BY p.name ASC, w.word COLLATE NOCASE ASC",
+                        "GROUP BY s.name, w.word " +  // deduplicate words shared across programs
+                        "ORDER BY s.name ASC, w.word COLLATE NOCASE ASC",
                 new String[]{PLAYER_ID}
         );
 
         while (cursor.moveToNext()) {
-            String programName = cursor.getString(cursor.getColumnIndexOrThrow("program_name"));
+            String sectionName = cursor.getString(cursor.getColumnIndexOrThrow("section_name"));
 
-            if (!groupedWords.containsKey(programName)) {
-                groupedWords.put(programName, new ArrayList<>());
-                groupTitles.add(programName);
-                programStats.put(programName, new ProgramStats());
+            if (!groupedWords.containsKey(sectionName)) {
+                groupedWords.put(sectionName, new ArrayList<>());
+                groupTitles.add(sectionName);
+                programStats.put(sectionName, new ProgramStats());
             }
 
             int wordColumnIndex = cursor.getColumnIndexOrThrow("word");
             int capturedAtColumnIndex = cursor.getColumnIndexOrThrow("captured_at");
 
             if (!cursor.isNull(wordColumnIndex)) {
-                programStats.get(programName).totalCount++;
+                programStats.get(sectionName).totalCount++;
 
                 if (!cursor.isNull(capturedAtColumnIndex)) {
                     String word = cursor.getString(wordColumnIndex);
                     long capturedAt = cursor.getLong(capturedAtColumnIndex);
 
-                    groupedWords.get(programName).add(new CollectedWord(word, capturedAt));
-                    programStats.get(programName).collectedCount++;
+                    groupedWords.get(sectionName).add(new CollectedWord(word, capturedAt));
+                    programStats.get(sectionName).collectedCount++;
                 }
             }
         }
