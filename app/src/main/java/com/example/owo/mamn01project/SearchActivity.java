@@ -6,12 +6,14 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -29,6 +31,14 @@ public class SearchActivity extends AppCompatActivity {
     private Sensor accelerometer;
     private Vibrator vibrator;
 
+    //test
+    private ProgressBar selectionProgress;
+    private Handler handler = new Handler();
+    private Runnable progressRunnable;
+
+    private int progress = 0;
+
+    //end test
     private ImageView selectionCircle;
 
     private ImageView currentLetter;
@@ -85,8 +95,8 @@ public class SearchActivity extends AppCompatActivity {
         letters = new ImageView[] {
                 findViewById(R.id.letterF),
                 findViewById(R.id.letterK),
-                findViewById(R.id.letterA),
                 findViewById(R.id.letterW),
+                findViewById(R.id.letterA),
                 findViewById(R.id.letterV),
                 findViewById(R.id.letterD),
                 findViewById(R.id.letterE),
@@ -95,6 +105,9 @@ public class SearchActivity extends AppCompatActivity {
         };
 
         currentLetter = findViewById(R.id.currentLetter);
+
+        //test
+        selectionProgress = findViewById(R.id.selectionProgress);
 
         overlay = findViewById(R.id.tutorialOverlay);
         dim = findViewById(R.id.tutorialDim);
@@ -118,6 +131,10 @@ public class SearchActivity extends AppCompatActivity {
 
         dim.setOnClickListener(v -> hideTutorial());
         selectionCircle.post(this::moveSelection);
+        selectionCircle.post(() -> {
+            moveSelection();
+            startSelectionProgress();
+        });
     }
 
     @Override
@@ -193,10 +210,14 @@ public class SearchActivity extends AppCompatActivity {
             selectedIndex = 0; // hoppa till första (F)
         }
 
+        //ändrat
         if (moved) {
             lastTiltTime = now;
             vibrate();
             moveSelection();
+
+            resetSelectionProgress();   // ❗ viktigt
+            startSelectionProgress();   // ❗ starta ny
         }
     }
     private void hideTutorial() {
@@ -206,6 +227,35 @@ public class SearchActivity extends AppCompatActivity {
 
     private void startGame(String section)  {
         Log.d("SearchActivity", "Starting Game with Section " + section);
+    }
+    private void startSelectionProgress() {
+        handler.removeCallbacks(progressRunnable);
+        progress = 0;
+        selectionProgress.setProgress(0);
+
+        progressRunnable = new Runnable() {
+            @Override
+            public void run() {
+                progress += 2;
+                selectionProgress.setProgress(progress);
+
+                if (progress >= 100) {
+                    vibrate();
+                    startGame("section_" + selectedIndex);
+                    return;
+                }
+
+                handler.postDelayed(this, 50);
+            }
+        };
+
+        handler.postDelayed(progressRunnable, 50);
+    }
+
+    private void resetSelectionProgress() {
+        handler.removeCallbacks(progressRunnable);
+        progress = 0;
+        selectionProgress.setProgress(0);
     }
 
     private void setOverlayInteractable(boolean interactable) {

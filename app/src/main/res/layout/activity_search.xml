@@ -83,7 +83,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="300dp"
-        android:layout_marginTop="310dp"
+        android:layout_marginTop="70dp"
         android:src="@drawable/w"/>
 
     <ImageView
@@ -101,6 +101,17 @@
         android:layout_gravity="bottom|start"
         android:layout_margin="16dp"
         android:background="#FFFFFF">
+
+        <ProgressBar
+            android:id="@+id/selectionProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_gravity="bottom"
+            android:max="100"
+            android:progress="0"
+            android:progressTint="#FF5722"
+            android:progressBackgroundTint="#33000000"/>
 
         <ImageView
             android:id="@+id/currentLetter"
