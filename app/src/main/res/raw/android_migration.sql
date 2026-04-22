@@ -44,14 +44,18 @@ CREATE INDEX IF NOT EXISTS idx_word_programs_program
     ON word_programs(program_id);
 
 -- ── Seed sections ────────────────────────────────────────────
-INSERT OR IGNORE INTO sections (code, name) VALUES ('D', 'Datateknik och Informations- och kommunikationsteknik');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('K', 'Kemiteknik, Bioteknik och kandidatprogrammet i livsmedelsteknik');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('V', 'Väg- och Vattenbyggnad, Lantmäteri, Brandingenjör, Riskhantering');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('M', 'Maskinteknik och Maskinteknik med teknisk design');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('E', 'Elektroteknik och Medicin och Teknik');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('F', 'Teknisk Fysik, Teknisk Matematik och Teknisk Nanovetenskap');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('D', 'D-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('K', 'K-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('V', 'V-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('M', 'M-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('E', 'E-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('F', 'F-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('A', 'A-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('W', 'W-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('I', 'I-Section');
 
 -- ── Seed programs ────────────────────────────────────────────
+INSERT OR IGNORE INTO programs (code, name) VALUES ('A',   'Arkitektur');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('B',   'Bioteknik');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('BME', 'Medicin och teknik');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('BR',  'Brandteknik');
@@ -60,6 +64,7 @@ INSERT OR IGNORE INTO programs (code, name) VALUES ('D',   'Datateknik');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('E',   'Elektroteknik');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('F',   'Teknisk fysik');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('I',   'Industriell ekonomi');
+INSERT OR IGNORE INTO programs (code, name) VALUES ('ID',  'Industridesign');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('K',   'Kemiteknik');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('L',   'Lantmateri');
 INSERT OR IGNORE INTO programs (code, name) VALUES ('M',   'Maskinteknik');
@@ -90,7 +95,6 @@ INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sectio
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='V'   AND s.code='V';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='L'   AND s.code='V';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='BR'  AND s.code='V';
-INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='R'   AND s.code='V';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='M'   AND s.code='M';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='MD'  AND s.code='M';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='E'   AND s.code='E';
@@ -98,6 +102,11 @@ INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sectio
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='F'   AND s.code='F';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='Pi'  AND s.code='F';
 INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='N'   AND s.code='F';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='A'   AND s.code='A';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='ID'  AND s.code='A';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='W'   AND s.code='W';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='R'   AND s.code='W';
+INSERT OR IGNORE INTO program_sections SELECT p.id, s.id FROM programs p, sections s WHERE p.code='I'   AND s.code='I';
 
 -- ── Seed words ───────────────────────────────────────────────
 INSERT OR IGNORE INTO words (word) VALUES ('Anatomy');
@@ -212,8 +221,33 @@ INSERT OR IGNORE INTO words (word) VALUES ('Wave');
 INSERT OR IGNORE INTO words (word) VALUES ('Wetland');
 INSERT OR IGNORE INTO words (word) VALUES ('Yield');
 INSERT OR IGNORE INTO words (word) VALUES ('Zoning');
+INSERT OR IGNORE INTO words (word) VALUES ('Arch');
+INSERT OR IGNORE INTO words (word) VALUES ('Draft');
+INSERT OR IGNORE INTO words (word) VALUES ('Facade');
+INSERT OR IGNORE INTO words (word) VALUES ('Model');
+INSERT OR IGNORE INTO words (word) VALUES ('Plan');
+INSERT OR IGNORE INTO words (word) VALUES ('Sketch');
+INSERT OR IGNORE INTO words (word) VALUES ('Space');
+INSERT OR IGNORE INTO words (word) VALUES ('Style');
+INSERT OR IGNORE INTO words (word) VALUES ('Urban');
+INSERT OR IGNORE INTO words (word) VALUES ('Color');
+INSERT OR IGNORE INTO words (word) VALUES ('Curve');
+INSERT OR IGNORE INTO words (word) VALUES ('Design');
+INSERT OR IGNORE INTO words (word) VALUES ('Ergon');
+INSERT OR IGNORE INTO words (word) VALUES ('Foam');
+INSERT OR IGNORE INTO words (word) VALUES ('Shape');
 
 -- ── word_programs ─────────────────────────────────────────────
+-- A — Arkitektur
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Arch'         AND p.code='A';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Draft'        AND p.code='A';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Facade'       AND p.code='A';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Model'        AND p.code='A';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Plan'         AND p.code='A';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Sketch'       AND p.code='A';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Space'        AND p.code='A';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Style'        AND p.code='A';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Urban'        AND p.code='A';
 -- B — Bioteknik
 INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='DNA'          AND p.code='B';
 INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Genome'       AND p.code='B';
@@ -293,6 +327,15 @@ INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p W
 INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Quality'      AND p.code='I';
 INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Risk'         AND p.code='I';
 
+-- ID — Industridesign
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Color'        AND p.code='ID';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Curve'        AND p.code='ID';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Design'       AND p.code='ID';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Ergon'        AND p.code='ID';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Foam'         AND p.code='ID';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Model'        AND p.code='ID';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Shape'        AND p.code='ID';
+INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Sketch'       AND p.code='ID';
 -- K — Kemiteknik
 INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Reactor'      AND p.code='K';
 INSERT OR IGNORE INTO word_programs SELECT w.id, p.id FROM words w, programs p WHERE w.word='Solvent'      AND p.code='K';
