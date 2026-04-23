@@ -91,6 +91,16 @@ public class SearchActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search);
 
+        Button btnOpenDictionary = findViewById(R.id.btnOpenDictionary);
+        Button btnOpenTutorial = findViewById(R.id.btnOpenTutorial);
+
+        btnOpenDictionary.setOnClickListener(v -> {
+            Intent intent = new Intent(SearchActivity.this, DictionaryActivity.class);
+            startActivity(intent);
+        });
+
+        btnOpenTutorial.setOnClickListener(v -> showTutorialIntro(true));
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
