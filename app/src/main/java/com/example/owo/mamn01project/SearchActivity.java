@@ -61,6 +61,7 @@ public class SearchActivity extends AppCompatActivity {
     private TextView tutorialBody;
 
     private View rowSkipView;
+    private View rowStepNavigation;
     private long lastTiltTime = 0;
 
     private boolean doneSelecting = false;
@@ -68,9 +69,12 @@ public class SearchActivity extends AppCompatActivity {
     private int stepIndex = -1;
 
     private final List<String> steps = Arrays.asList(
-            "Step 1: Walk around to discover words on the map.",
-            "Step 2: Tap a word to catch it.",
-            "Step 3: Open your dictionary to see saved words."
+            "Step 1: Tilt your phone left or right to move between the section letters on the map. ",
+            "Step 2: Hold the selector on a letter until the progress bar fills to choose that section.",
+            "Step 3: A random uncollected word from that section will be selected for you.",
+            "Step 4: Press Play Word in the spelling screen to hear the word.",
+            "Step 5: Press Start Listening and spell the word aloud. You have 3 tries.",
+            "Step 6: If you spell it correctly, the word is saved in your dictionary."
     );
 
     private final SensorEventListener sensorListener = new SensorEventListener() {
@@ -90,16 +94,6 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_search);
-
-        Button btnOpenDictionary = findViewById(R.id.btnOpenDictionary);
-        Button btnOpenTutorial = findViewById(R.id.btnOpenTutorial);
-
-        btnOpenDictionary.setOnClickListener(v -> {
-            Intent intent = new Intent(SearchActivity.this, DictionaryActivity.class);
-            startActivity(intent);
-        });
-
-        btnOpenTutorial.setOnClickListener(v -> showTutorialIntro(true));
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -144,16 +138,33 @@ public class SearchActivity extends AppCompatActivity {
 
         rowSkipView = findViewById(R.id.rowSkipView);
 
+        rowStepNavigation = findViewById(R.id.rowStepNavigation);
+
         View btnClose = findViewById(R.id.btnClose);
         View btnSkip = findViewById(R.id.btnSkip);
         View btnView = findViewById(R.id.btnView);
+
+        Button btnOpenDictionary = findViewById(R.id.btnOpenDictionary);
+        Button btnOpenTutorial = findViewById(R.id.btnOpenTutorial);
+
+        View btnBack = findViewById(R.id.btnBack);
+        View btnNext = findViewById(R.id.btnNext);
+        View rowStepNavigation = findViewById(R.id.rowStepNavigation);
 
         showTutorialIntro(true);
 
         btnClose.setOnClickListener(v -> hideTutorial());
         btnSkip.setOnClickListener(v -> hideTutorial());
         btnView.setOnClickListener(v -> showStep(0));
+        btnBack.setOnClickListener(v -> showStep(stepIndex - 1));
+        btnNext.setOnClickListener(v -> showStep(stepIndex + 1));
 
+        btnOpenDictionary.setOnClickListener(v -> {
+            Intent intent = new Intent(SearchActivity.this, DictionaryActivity.class);
+            startActivity(intent);
+        });
+
+        btnOpenTutorial.setOnClickListener(v -> showTutorialIntro(true));
 
         dim.setOnClickListener(v -> hideTutorial());
         selectionCircle.post(this::moveSelection);
@@ -174,6 +185,7 @@ public class SearchActivity extends AppCompatActivity {
         tutorialBody.setText("Welcome! Want to view the tutorial?");
 
         rowSkipView.setVisibility(View.VISIBLE);
+        rowStepNavigation.setVisibility(View.GONE);
 
         stepIndex = -1;
     }
@@ -181,6 +193,11 @@ public class SearchActivity extends AppCompatActivity {
     private void showStep(int index) {
         if (index < 0) {
             showTutorialIntro(true);
+            return;
+        }
+
+        if (index >= steps.size()) {
+            hideTutorial();
             return;
         }
 
@@ -193,6 +210,19 @@ public class SearchActivity extends AppCompatActivity {
         tutorialBody.setText(steps.get(index));
 
         rowSkipView.setVisibility(View.GONE);
+        rowStepNavigation.setVisibility(View.VISIBLE);
+
+        View btnBack = findViewById(R.id.btnBack);
+        Button btnNext = findViewById(R.id.btnNext);
+
+        btnBack.setEnabled(index > 0);
+        btnBack.setAlpha(index > 0 ? 1f : 0.5f);
+
+        if (index == steps.size() - 1) {
+            btnNext.setText("Done");
+        } else {
+            btnNext.setText("Next");
+        }
     }
 
     private void moveSelection() {
