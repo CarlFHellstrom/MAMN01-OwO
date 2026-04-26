@@ -152,7 +152,7 @@
             android:id="@+id/tutorialDim"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#99000000" />
+            android:background="#88000000" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/tutorialCard"
@@ -167,7 +167,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:background="@color/light_green">
 
                 <ImageButton
                     android:id="@+id/btnClose"
@@ -176,29 +177,32 @@
                     android:background="@android:color/transparent"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:tint="@color/dark_green"/>
 
                 <TextView
                     android:id="@+id/tutorialTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Tutorial"
+                    android:text="@string/tutorialTitle"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/btnClose"/>
+                    app:layout_constraintEnd_toStartOf="@id/btnClose"
+                    android:textColor="@color/dark_green"/>
 
                 <TextView
                     android:id="@+id/tutorialBody"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Welcome! Want to view the tutorial?"
+                    android:text="@string/welcome_want_to_view_the_tutorial"
                     android:textSize="16sp"
                     app:layout_constraintTop_toBottomOf="@id/tutorialTitle"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginTop="12dp"/>
+                    android:layout_marginTop="12dp"
+                    android:textColor="@color/forest_green"/>
 
                 <LinearLayout
                     android:id="@+id/rowSkipView"
@@ -215,14 +219,48 @@
                         android:id="@+id/btnSkip"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Skip"/>
+                        android:text="@string/skipButton"
+                        android:backgroundTint="@color/forest_green"
+                        android:textColor="@color/light_green"/>
 
                     <Button
                         android:id="@+id/btnView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View"
-                        android:layout_marginStart="12dp"/>
+                        android:text="@string/viewButton"
+                        android:layout_marginStart="12dp"
+                        android:backgroundTint="@color/olive_green"
+                        android:textColor="@color/light_green"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/rowStepNavigation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/tutorialBody"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="16dp">
+
+                    <Button
+                        android:id="@+id/btnBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/backButton"
+                        android:backgroundTint="@color/forest_green"
+                        android:textColor="@color/light_green" />
+
+                    <Button
+                        android:id="@+id/btnNext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/nextButton"
+                        android:backgroundTint="@color/olive_green"
+                        android:textColor="@color/light_green" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -231,5 +269,30 @@
 
 
     </FrameLayout>
+
+    <Button
+        android:id="@+id/btnOpenTutorial"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/openTutorialButton"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:backgroundTint="@color/sage_green"
+        android:textColor="@color/dark_green" />
+
+    <Button
+        android:id="@+id/btnOpenDictionary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/openDictionaryButton"
+        android:backgroundTint="@color/sage_green"
+        android:textColor="@color/dark_green"/>
+
 
 </FrameLayout>

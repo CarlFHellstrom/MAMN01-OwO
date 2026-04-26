@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MAMN01 Project</string>
+    <string name="tutorialTitle">Tutorial</string>
+    <string name="welcome_want_to_view_the_tutorial">Welcome! Want to view the tutorial?</string>
+    <string name="skipButton">Skip</string>
+    <string name="viewButton">View</string>
+    <string name="backButton">Back</string>
+    <string name="nextButton">Next</string>
+    <string name="openTutorialButton">\?</string>
+    <string name="openDictionaryButton">Dictionary</string>
 </resources>
