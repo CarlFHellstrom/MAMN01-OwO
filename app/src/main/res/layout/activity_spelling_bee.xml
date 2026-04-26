@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_green"
     tools:context=".SpellingBeeActivity">
 
     <LinearLayout
@@ -17,13 +18,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Spelling Bee"
+            android:textColor="@color/dark_green"
             android:textSize="34sp" />
 
         <TextView
@@ -31,7 +33,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="3 Tries Left" />
+            android:text="3 Tries Left"
+            android:textColor="@color/dark_green" />
 
         <TextView
             android:id="@+id/playerGuess"
@@ -39,19 +42,25 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="- No Guess Yet -"
+            android:textColor="@color/dark_green"
             android:textSize="20sp" />
 
         <Button
             android:id="@+id/listenButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Play Word 🔊" />
+            android:backgroundTint="@color/olive_green"
+            android:text="Play Word 🔊"
+            android:textColor="@color/light_green" />
 
         <Button
             android:id="@+id/speakButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Listening 🎤" />
+            android:backgroundTint="@color/sage_green"
+            android:enabled="false"
+            android:text="Start Listening 🎤"
+            android:textColor="@color/light_green" />
     </LinearLayout>
 
     <LinearLayout
@@ -64,7 +73,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             android:id="@+id/endText"
@@ -72,6 +81,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="You Win!"
+            android:textColor="@color/dark_green"
             android:textSize="34sp" />
 
         <TextView
@@ -79,13 +89,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textColor="@color/dark_green"
             tools:text="Word Added to Dictionary: APPLE" />
 
         <Button
             android:id="@+id/continueButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Continue" />
+            android:backgroundTint="@color/olive_green"
+            android:text="Continue"
+            android:textColor="@color/light_green" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

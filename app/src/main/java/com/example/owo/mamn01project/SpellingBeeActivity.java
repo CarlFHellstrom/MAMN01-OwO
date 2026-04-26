@@ -178,6 +178,9 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private void onListenButtonClick() {
         String wordString = word.toString();
         tts.speak(wordString, TextToSpeech.QUEUE_FLUSH, null, "SpellingBeeWord");
+        speakButton.setEnabled(true);
+        // set background tint to background @color/olive_green
+        speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.forest_green));
     }
 
     @Override
