@@ -44,15 +44,15 @@ CREATE INDEX IF NOT EXISTS idx_word_programs_program
     ON word_programs(program_id);
 
 -- ── Seed sections ────────────────────────────────────────────
-INSERT OR IGNORE INTO sections (code, name) VALUES ('D', 'D-Section');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('K', 'K-Section');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('V', 'V-Section');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('M', 'M-Section');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('E', 'E-Section');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('F', 'F-Section');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('A', 'A-Section');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('W', 'W-Section');
-INSERT OR IGNORE INTO sections (code, name) VALUES ('I', 'I-Section');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('D', 'D-Guild');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('K', 'K-Guild');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('V', 'V-Guild');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('M', 'M-Guild');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('E', 'E-Guild');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('F', 'F-Guild');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('A', 'A-Guild');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('W', 'W-Guild');
+INSERT OR IGNORE INTO sections (code, name) VALUES ('I', 'I-Guild');
 
 -- ── Seed programs ────────────────────────────────────────────
 INSERT OR IGNORE INTO programs (code, name) VALUES ('A',   'Arkitektur');

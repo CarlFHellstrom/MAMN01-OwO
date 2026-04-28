@@ -69,9 +69,9 @@ public class SearchActivity extends AppCompatActivity {
     private int stepIndex = -1;
 
     private final List<String> steps = Arrays.asList(
-            "Step 1: Tilt your phone left or right to move between the section letters on the map. ",
-            "Step 2: Hold the selector on a letter until the progress bar fills to choose that section.",
-            "Step 3: A random uncollected word from that section will be selected for you.",
+            "Step 1: Tilt your phone left or right to move between the guild letters on the map. ",
+            "Step 2: Hold the selector on a letter until the progress bar fills to choose that guild.",
+            "Step 3: A random uncollected word from that guild will be selected for you.",
             "Step 4: Press Play Word in the spelling screen to hear the word.",
             "Step 5: Press Start Listening and spell the word aloud. You have 3 tries.",
             "Step 6: If you spell it correctly, the word is saved in your dictionary."
