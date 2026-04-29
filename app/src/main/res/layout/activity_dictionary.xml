@@ -14,17 +14,27 @@
         android:id="@+id/dictionaryTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="12dp"
+        android:paddingBottom="4dp"
         android:text="Dictionary"
         android:textColor="@color/dark_green"
         android:textSize="24sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/dictionarySubtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Collected words: 0"
+        android:textColor="@color/forest_green"
+        android:textSize="16sp" />
+
     <ExpandableListView
         android:id="@+id/dictionaryListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/forest_green"
-        android:dividerHeight="1dp" />
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:groupIndicator="@null" />
 
 </LinearLayout>

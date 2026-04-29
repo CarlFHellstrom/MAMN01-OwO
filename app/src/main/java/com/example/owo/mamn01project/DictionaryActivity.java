@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class DictionaryActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
     private ExpandableListView dictionaryListView;
+    private TextView dictionarySubtitle;
 
     private final List<String> groupTitles = new ArrayList<>();
     private final Map<String, List<CollectedWord>> groupedWords = new LinkedHashMap<>();
@@ -34,6 +36,7 @@ public class DictionaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dictionary);
 
         dictionaryListView = findViewById(R.id.dictionaryListView);
+        dictionarySubtitle = findViewById(R.id.dictionarySubtitle);
         databaseHelper = new DatabaseHelper(this);
 
         loadDictionary();
@@ -93,6 +96,26 @@ public class DictionaryActivity extends AppCompatActivity {
                 words.add(new CollectedWord("No collected words yet", 0, true));
             }
         }
+
+        int totalCollectedWords = 0;
+        int completedPrograms = 0;
+
+        for (String program : groupTitles) {
+            ProgramStats stats = programStats.get(program);
+
+            if (stats != null) {
+                totalCollectedWords += stats.collectedCount;
+
+                if (stats.totalCount > 0 && stats.collectedCount == stats.totalCount) {
+                    completedPrograms++;
+                }
+            }
+        }
+
+        dictionarySubtitle.setText(
+                "Collected words: " + totalCollectedWords +
+                        " • Completed guilds: " + completedPrograms + "/" + groupTitles.size()
+        );
 
         DictionaryExpandableListAdapter adapter =
                 new DictionaryExpandableListAdapter(this, groupTitles, groupedWords, programStats);

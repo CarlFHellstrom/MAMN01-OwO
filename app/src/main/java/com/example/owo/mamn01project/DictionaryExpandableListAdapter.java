@@ -2,10 +2,13 @@ package com.example.owo.mamn01project;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -72,22 +75,85 @@ public class DictionaryExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        TextView textView = new TextView(context);
-        textView.setPadding(80, 32, 32, 32);
-        textView.setTextSize(20);
-        textView.setTypeface(null, Typeface.BOLD);
         String programName = groupTitles.get(groupPosition);
         DictionaryActivity.ProgramStats stats = programStats.get(programName);
 
-        String titleText = programName;
+        int collected = 0;
+        int total = 0;
+
         if (stats != null) {
-            titleText = programName + " (" + stats.collectedCount + "/" + stats.totalCount + ")";
+            collected = stats.collectedCount;
+            total = stats.totalCount;
         }
 
-        textView.setText((String) getGroup(groupPosition));
-        textView.setTextColor(context.getColor(R.color.dark_green));
-        textView.setBackgroundColor(context.getColor(R.color.sage_green));
-        return textView;
+        boolean isEmpty = collected == 0;
+        boolean isCompleted = total > 0 && collected == total;
+
+        LinearLayout card = new LinearLayout(context);
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(36, 28, 36, 28);
+
+        GradientDrawable background = new GradientDrawable();
+        background.setCornerRadius(28);
+
+        if (isCompleted) {
+            background.setColor(context.getColor(R.color.light_green));
+            background.setStroke(4, context.getColor(R.color.forest_green));
+        } else if (isEmpty) {
+            background.setColor(context.getColor(R.color.light_green));
+        } else {
+            background.setColor(context.getColor(R.color.light_green));
+            background.setStroke(3, context.getColor(R.color.forest_green));
+        }
+
+        card.setBackground(background);
+        card.setAlpha(isEmpty ? 0.75f : 1.0f);
+
+        LinearLayout titleRow = new LinearLayout(context);
+        titleRow.setOrientation(LinearLayout.HORIZONTAL);
+        titleRow.setGravity(Gravity.CENTER_VERTICAL);
+
+        TextView title = new TextView(context);
+        title.setText(programName + (isCompleted ? " 👑" : ""));
+        title.setTextSize(20);
+        title.setTypeface(null, Typeface.BOLD);
+        title.setTextColor(context.getColor(R.color.dark_green));
+
+        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                1
+        );
+        title.setLayoutParams(titleParams);
+
+        TextView expandIcon = new TextView(context);
+        expandIcon.setText(isExpanded ? "⌃" : "⌄");
+        expandIcon.setTextSize(24);
+        expandIcon.setTypeface(null, Typeface.BOLD);
+        expandIcon.setTextColor(context.getColor(R.color.dark_green));
+
+        titleRow.addView(title);
+        titleRow.addView(expandIcon);
+
+        TextView progressText = new TextView(context);
+        progressText.setText(collected + " / " + total + " words collected");
+        progressText.setTextSize(14);
+        progressText.setTextColor(context.getColor(R.color.forest_green));
+        progressText.setPadding(0, 8, 0, 8);
+
+        ProgressBar progressBar = new ProgressBar(
+                context,
+                null,
+                android.R.attr.progressBarStyleHorizontal
+        );
+        progressBar.setMax(total == 0 ? 1 : total);
+        progressBar.setProgress(collected);
+
+        card.addView(titleRow);
+        card.addView(progressText);
+        card.addView(progressBar);
+
+        return card;
     }
 
     @Override
