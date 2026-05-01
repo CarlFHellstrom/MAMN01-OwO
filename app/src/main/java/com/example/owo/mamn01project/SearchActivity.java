@@ -175,6 +175,17 @@ public class SearchActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         sensorManager.registerListener(sensorListener, accelerometer, SensorManager.SENSOR_DELAY_UI);
+
+        doneSelecting = false;
+        selectedLetterContainer.setVisibility(View.GONE);
+        resetSelectionProgress();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(sensorListener);
+        resetSelectionProgress();
     }
 
     private void showTutorialIntro(boolean interactable) {
@@ -242,6 +253,7 @@ public class SearchActivity extends AppCompatActivity {
     }
     private void tilt(int x){
         if (doneSelecting) return;
+        if (overlay.getVisibility() == View.VISIBLE) return;
 
         long now = System.currentTimeMillis();
 
