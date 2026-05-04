@@ -16,6 +16,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.owo.mamn01project.Feedback.FeedbackGenerator;
 import com.example.owo.mamn01project.LetterRecognition.Letter;
 import com.example.owo.mamn01project.LetterRecognition.LetterRecognizer;
 import com.example.owo.mamn01project.LetterRecognition.LetterRecognizerListener;
@@ -43,6 +44,8 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private LetterRecognizer letterRecognizer;
     private DatabaseHelper databaseHelper;
 
+    private FeedbackGenerator feedbackGenerator;
+
     private boolean won = false;
 
     @Override
@@ -55,6 +58,8 @@ public class SpellingBeeActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+            feedbackGenerator = new FeedbackGenerator(getApplicationContext());
 
             speakButton = findViewById(R.id.speakButton);
             listenButton = findViewById(R.id.listenButton);
@@ -145,6 +150,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
             endStatusText.setText("Word Added to Collection: " + word.toString());
             databaseHelper.saveCollectedWord(DictionaryActivity.PLAYER_ID, word.toString());
             won = true;
+            feedbackGenerator.playFanfare();
 
             gameLayout.setVisibility(View.GONE);
             endLayout.setVisibility(View.VISIBLE);
@@ -162,13 +168,16 @@ public class SpellingBeeActivity extends AppCompatActivity {
                 endText.setText("You Lose!");
                 endStatusText.setText("The Word was: " + word.toString());
                 won = false;
+                feedbackGenerator.playFailure();
 
                 gameLayout.setVisibility(View.GONE);
                 endLayout.setVisibility(View.VISIBLE);
             } else if (tries == 1) {
                 triesLeft.setText("1 try left!");
+                feedbackGenerator.playError();
             } else {
                 triesLeft.setText(tries + " tries left!");
+                feedbackGenerator.playError();
             }
         }
 
