@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
@@ -155,8 +156,33 @@ public class SpellingBeeActivity extends AppCompatActivity {
         } else {
             // Player Guessed Incorrectly
             SpannableString feedback = generateLetterFeedback(word.toString(), guessedWord.toString());
-            playerGuess.setText("Try again: " + feedback);
-            playerGuess.setTextColor(Color.RED);
+            SpannableString fullText = new SpannableString("Try again: " + feedback);
+
+            // Make "Try again: " red
+            fullText.setSpan(
+                    new ForegroundColorSpan(Color.RED),
+                    0,
+                    "Try again: ".length(),
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+
+            // Copy spans from feedback into full text
+            Spanned spannedFeedback = feedback;
+            Object[] spans = spannedFeedback.getSpans(0, feedback.length(), Object.class);
+
+            for (Object span : spans) {
+                int start = spannedFeedback.getSpanStart(span);
+                int end = spannedFeedback.getSpanEnd(span);
+
+                fullText.setSpan(
+                        span,
+                        start + "Try again: ".length(),
+                        end + "Try again: ".length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+
+            playerGuess.setText(fullText);
             tries -= 1;
             if(tries <= 0) {
                 // Player Loses
