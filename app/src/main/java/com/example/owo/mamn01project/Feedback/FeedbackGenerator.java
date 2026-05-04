@@ -22,6 +22,7 @@ public class FeedbackGenerator {
     private MediaPlayer fanfare_sound;
     private MediaPlayer failure_sound;
     private MediaPlayer error_sound;
+    private MediaPlayer ping_sound;
     private Vibrator vibrator;
 
     private Context context;
@@ -40,6 +41,7 @@ public class FeedbackGenerator {
         this.fanfare_sound = __createMediaPlayer(R.raw.fanfare);
         this.failure_sound = __createMediaPlayer(R.raw.failure);
         this.error_sound = __createMediaPlayer(R.raw.error);
+        this.ping_sound = __createMediaPlayer(R.raw.ping);
 
     }
 
@@ -97,5 +99,11 @@ public class FeedbackGenerator {
         );
         vibrator.vibrate(effect);
         this.error_sound.start();
+    }
+
+    public void playPing(){
+        var effect = VibrationEffect.createOneShot(100, 128);
+        vibrator.vibrate(effect);
+        this.ping_sound.start();
     }
 }
