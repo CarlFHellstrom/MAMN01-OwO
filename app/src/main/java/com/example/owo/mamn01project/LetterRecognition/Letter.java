@@ -29,6 +29,7 @@ public enum Letter {
     T,
     U,
     V,
+    W,
     X,
     Y,
     Z;
