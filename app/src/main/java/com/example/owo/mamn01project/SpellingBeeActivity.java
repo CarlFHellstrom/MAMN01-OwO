@@ -151,7 +151,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
         } else {
             // Player Guessed Incorrectly
-            String feedback = generatePositionFeedback(word.toString(), guessedWord.toString());
+            String feedback = generateLetterFeedback(word.toString(), guessedWord.toString());
             playerGuess.setText("Try again: " + feedback);
             playerGuess.setTextColor(Color.RED);
             tries -= 1;
@@ -173,9 +173,10 @@ public class SpellingBeeActivity extends AppCompatActivity {
             }
         }
 
+
     }
 
-    private String generatePositionFeedback(String targetWord, String guessedWord) {
+    private String generateLetterFeedback(String targetWord, String guessedWord) {
         String target = targetWord.toUpperCase();
         String guess = guessedWord.toUpperCase();
 
@@ -187,7 +188,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
             } else if (target.charAt(i) == guess.charAt(i)) {
                 feedback.append(target.charAt(i));
             } else {
-                feedback.append('•');
+                feedback.append(guess.charAt(i));
 
                 for (int j = i + 1; j < target.length(); j++) {
                     feedback.append('_');
