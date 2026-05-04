@@ -151,7 +151,8 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
         } else {
             // Player Guessed Incorrectly
-            playerGuess.setText("Incorrect: " + guessedWord);
+            String feedback = generatePositionFeedback(word.toString(), guessedWord.toString());
+            playerGuess.setText("Try again: " + feedback);
             playerGuess.setTextColor(Color.RED);
             tries -= 1;
             if(tries <= 0) {
@@ -172,9 +173,32 @@ public class SpellingBeeActivity extends AppCompatActivity {
             }
         }
 
-
     }
 
+    private String generatePositionFeedback(String targetWord, String guessedWord) {
+        String target = targetWord.toUpperCase();
+        String guess = guessedWord.toUpperCase();
+
+        StringBuilder feedback = new StringBuilder();
+
+        for (int i = 0; i < target.length(); i++) {
+            if (i >= guess.length()) {
+                feedback.append('_');
+            } else if (target.charAt(i) == guess.charAt(i)) {
+                feedback.append(target.charAt(i));
+            } else {
+                feedback.append('•');
+
+                for (int j = i + 1; j < target.length(); j++) {
+                    feedback.append('_');
+                }
+
+                break;
+            }
+        }
+
+        return feedback.toString();
+    }
     private void onListenButtonClick() {
         String wordString = word.toString();
         tts.speak(wordString, TextToSpeech.QUEUE_FLUSH, null, "SpellingBeeWord");
