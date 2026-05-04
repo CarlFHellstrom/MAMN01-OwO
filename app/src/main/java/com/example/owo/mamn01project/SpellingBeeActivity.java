@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -151,7 +154,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
         } else {
             // Player Guessed Incorrectly
-            String feedback = generateLetterFeedback(word.toString(), guessedWord.toString());
+            SpannableString feedback = generateLetterFeedback(word.toString(), guessedWord.toString());
             playerGuess.setText("Try again: " + feedback);
             playerGuess.setTextColor(Color.RED);
             tries -= 1;
@@ -176,29 +179,41 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
     }
 
-    private String generateLetterFeedback(String targetWord, String guessedWord) {
+    private SpannableString generateLetterFeedback(String targetWord, String guessedWord) {
         String target = targetWord.toUpperCase();
         String guess = guessedWord.toUpperCase();
 
-        StringBuilder feedback = new StringBuilder();
+        StringBuilder raw = new StringBuilder();
+        int errorIndex = -1;
 
         for (int i = 0; i < target.length(); i++) {
             if (i >= guess.length()) {
-                feedback.append('_');
+                raw.append('_');
             } else if (target.charAt(i) == guess.charAt(i)) {
-                feedback.append(target.charAt(i));
+                raw.append(target.charAt(i));
             } else {
-                feedback.append(guess.charAt(i));
+                raw.append(guess.charAt(i));
+                errorIndex = i;
 
                 for (int j = i + 1; j < target.length(); j++) {
-                    feedback.append('_');
+                    raw.append('_');
                 }
-
                 break;
             }
         }
 
-        return feedback.toString();
+        SpannableString spannable = new SpannableString(raw.toString());
+
+        if (errorIndex != -1) {
+            spannable.setSpan(
+                    new ForegroundColorSpan(Color.RED),
+                    errorIndex,
+                    errorIndex + 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+
+        return spannable;
     }
     private void onListenButtonClick() {
         String wordString = word.toString();
