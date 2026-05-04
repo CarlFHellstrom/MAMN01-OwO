@@ -126,29 +126,37 @@ public class SpellingBeeActivity extends AppCompatActivity {
     }
 
     private void onSpeakButtonClick() {
+        feedbackGenerator.playPing();
         letterRecognizer.startListening();
     }
 
     private void onStartSpeak() {
         speakButton.setEnabled(false);
         listenButton.setEnabled(false);
+
+        speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.sage_green));
     }
 
     private void onSpeakError(String errorString) {
         speakButton.setEnabled(true);
         listenButton.setEnabled(true);
+        feedbackGenerator.playError();
+
+        speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.forest_green));
         playerGuess.setText("Error:" + errorString);
     }
 
     private void onFinishedSpeak(Word guessedWord) {
         speakButton.setEnabled(true);
         listenButton.setEnabled(true);
+        speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.forest_green));
 
         if (guessedWord.equals(word)) {
             // Player Guessed Correctly and Wins
             playerGuess.setText("Correct: " + guessedWord);
             playerGuess.setTextColor(Color.GREEN);
             speakButton.setEnabled(false);
+            speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.sage_green));
 
             endText.setText("You Win!");
             endStatusText.setText("Word Added to Collection: " + word.toString());
@@ -194,6 +202,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
                 // Player Loses
                 playerGuess.setText("Game Over! The word was: " + word.toString());
                 speakButton.setEnabled(false);
+                speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.sage_green));
 
                 endText.setText("You Lose!");
                 endStatusText.setText("The Word was: " + word.toString());
@@ -255,7 +264,6 @@ public class SpellingBeeActivity extends AppCompatActivity {
         String wordString = word.toString();
         tts.speak(wordString, TextToSpeech.QUEUE_FLUSH, null, "SpellingBeeWord");
         speakButton.setEnabled(true);
-        // set background tint to background @color/olive_green
         speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.forest_green));
     }
 
