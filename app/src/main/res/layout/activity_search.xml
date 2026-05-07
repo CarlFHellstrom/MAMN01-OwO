@@ -198,11 +198,20 @@
                     android:layout_height="wrap_content"
                     android:text="@string/welcome_want_to_view_the_tutorial"
                     android:textSize="16sp"
-                    app:layout_constraintTop_toBottomOf="@id/tutorialTitle"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tutorialImage"                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="12dp"
                     android:textColor="@color/forest_green"/>
+
+                <ImageView
+                    android:id="@+id/tutorialImage"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="12dp"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintTop_toBottomOf="@id/tutorialTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <LinearLayout
                     android:id="@+id/rowSkipView"

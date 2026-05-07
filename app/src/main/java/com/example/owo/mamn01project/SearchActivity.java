@@ -60,6 +60,9 @@ public class SearchActivity extends AppCompatActivity {
     private TextView tutorialTitle;
     private TextView tutorialBody;
 
+    private ImageView tutorialImage;
+
+
     private View rowSkipView;
     private View rowStepNavigation;
     private long lastTiltTime = 0;
@@ -69,12 +72,17 @@ public class SearchActivity extends AppCompatActivity {
     private int stepIndex = -1;
 
     private final List<String> steps = Arrays.asList(
-            "Step 1: Tilt your phone left or right to move between the guild letters on the map. ",
-            "Step 2: Hold the selector on a letter until the progress bar fills to choose that guild.",
-            "Step 3: A random uncollected word from that guild will be selected for you.",
-            "Step 4: Press Play Word in the spelling screen to hear the word.",
-            "Step 5: Press Start Listening and spell the word aloud. You have 3 tries.",
-            "Step 6: If you spell it correctly, the word is saved in your dictionary."
+            "Step 1: Tilt your phone left or right to move the selector between the guild letters.",
+
+            "Step 2: Hold the selector still on a letter to choose it.",
+
+            "Step 3: A new word from that guild will appear automatically.",
+
+            "Step 4: Press the 'Play Word' button to hear the word before spelling.",
+
+            "Step 5: Press 'Start Listening' and say the word out loud. You have 3 tries.",
+
+            "Step 6: Spell the word correctly to save it to your dictionary."
     );
 
     private final SensorEventListener sensorListener = new SensorEventListener() {
@@ -136,6 +144,8 @@ public class SearchActivity extends AppCompatActivity {
         tutorialTitle = findViewById(R.id.tutorialTitle);
         tutorialBody = findViewById(R.id.tutorialBody);
 
+        tutorialImage = findViewById(R.id.tutorialImage);
+
         rowSkipView = findViewById(R.id.rowSkipView);
 
         rowStepNavigation = findViewById(R.id.rowStepNavigation);
@@ -149,7 +159,6 @@ public class SearchActivity extends AppCompatActivity {
 
         View btnBack = findViewById(R.id.btnBack);
         View btnNext = findViewById(R.id.btnNext);
-        View rowStepNavigation = findViewById(R.id.rowStepNavigation);
 
         showTutorialIntro(true);
 
@@ -191,6 +200,7 @@ public class SearchActivity extends AppCompatActivity {
     private void showTutorialIntro(boolean interactable) {
         overlay.setVisibility(View.VISIBLE);
         setOverlayInteractable(interactable);
+        tutorialImage.setVisibility(View.GONE);
 
         tutorialTitle.setText("Tutorial");
         tutorialBody.setText("Welcome! Want to view the tutorial?");
@@ -207,10 +217,19 @@ public class SearchActivity extends AppCompatActivity {
             return;
         }
 
+        tutorialImage.setVisibility(View.VISIBLE);
+
+        //Bilden
+        if (index == 0) {
+            tutorialImage.setImageResource(R.drawable.tilt1);
+        }
+
         if (index >= steps.size()) {
             hideTutorial();
             return;
         }
+        //tutorialImage.setImageResource(stepImages.get(index));
+
 
         overlay.setVisibility(View.VISIBLE);
         setOverlayInteractable(true);
