@@ -13,87 +13,14 @@
         android:src="@drawable/map"
         android:scaleType="fitXY"/>
 
-    <!-- BOKSTÄVER -->
-    <ImageView
-        android:id="@+id/letterF"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="450dp"
-        android:src="@drawable/f"/>
+    <!-- SCALABLE LETTER OVERLAY -->
+    <!-- Letters are positioned via MapOverlayView using percentage-based coords -->
+    <com.example.owo.mamn01project.MapOverlayView
+        android:id="@+id/mapOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <ImageView
-        android:id="@+id/letterK"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="80dp"
-        android:src="@drawable/k"/>
-
-    <ImageView
-        android:id="@+id/letterM"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="250dp"
-        android:layout_marginTop="580dp"
-        android:src="@drawable/m"/>
-
-    <ImageView
-        android:id="@+id/letterA"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="340dp"
-        android:layout_marginTop="150dp"
-        android:src="@drawable/a"/>
-
-    <ImageView
-        android:id="@+id/letterI"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="670dp"
-        android:src="@drawable/i"/>
-
-    <ImageView
-        android:id="@+id/letterD"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="230dp"
-        android:layout_marginTop="430dp"
-        android:src="@drawable/d"/>
-
-    <ImageView
-        android:id="@+id/letterE"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="230dp"
-        android:layout_marginTop="520dp"
-        android:src="@drawable/e"/>
-
-    <ImageView
-        android:id="@+id/letterV"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="250dp"
-        android:layout_marginTop="360dp"
-        android:src="@drawable/v"/>
-
-    <ImageView
-        android:id="@+id/letterW"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="300dp"
-        android:layout_marginTop="70dp"
-        android:src="@drawable/w"/>
-
-    <ImageView
-        android:id="@+id/selectionCircle"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="200dp"
-        android:background="@drawable/circle"/>
-
+    <!-- INFO BOX -->
     <FrameLayout
         android:id="@+id/infoBox"
         android:layout_width="120dp"
@@ -122,6 +49,7 @@
 
     </FrameLayout>
 
+    <!-- SELECTED LETTER CENTER POPUP -->
     <FrameLayout
         android:id="@+id/selectedLetterContainer"
         android:layout_width="250dp"
@@ -275,8 +203,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 
-
-
     </FrameLayout>
 
     <Button
@@ -303,5 +229,12 @@
         android:backgroundTint="@color/sage_green"
         android:textColor="@color/dark_green"/>
 
+    <ImageView
+        android:id="@+id/selectionCircle"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="200dp"
+        android:background="@drawable/circle"/>
 
 </FrameLayout>
