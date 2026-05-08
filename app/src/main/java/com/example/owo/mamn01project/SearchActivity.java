@@ -76,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
 
             "Step 2: Hold the selector still on a letter to choose it.",
 
-            "Step 3: A new word from that guild will appear automatically.",
+            "Step 3: The guilds icon will appear automatically and redirect you to the spelling bee game.",
 
             "Step 4: Press the 'Play Word' button to hear the word before spelling.",
 
@@ -217,18 +217,27 @@ public class SearchActivity extends AppCompatActivity {
             return;
         }
 
-        tutorialImage.setVisibility(View.VISIBLE);
-
-        //Bilden
-        if (index == 0) {
-            tutorialImage.setImageResource(R.drawable.tilt1);
-        }
-
         if (index >= steps.size()) {
             hideTutorial();
             return;
         }
-        //tutorialImage.setImageResource(stepImages.get(index));
+
+        tutorialImage.setVisibility(View.VISIBLE);
+
+        // Update images based on step index
+        if (index == 0) {
+            tutorialImage.setImageResource(R.drawable.tilt1);
+        } else if (index == 1) {
+            tutorialImage.setImageResource(R.drawable.hold_still);
+        } else if (index == 2) {
+            tutorialImage.setVisibility(View.GONE);
+        } else if (index == 3) {
+            tutorialImage.setImageResource(R.drawable.play_word);
+        } else if (index == 4) {
+            tutorialImage.setImageResource(R.drawable.start_listening2);
+        } else if (index == 5) {
+            tutorialImage.setImageResource(R.drawable.speaking1);
+        }
 
 
         overlay.setVisibility(View.VISIBLE);
