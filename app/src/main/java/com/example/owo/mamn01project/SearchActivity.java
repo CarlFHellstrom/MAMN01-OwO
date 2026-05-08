@@ -72,6 +72,10 @@ public class SearchActivity extends AppCompatActivity {
 
     private TextView tutorialTitle;
     private TextView tutorialBody;
+
+    private ImageView tutorialImage;
+
+
     private View rowSkipView;
     private View rowStepNavigation;
     private long lastTiltTime = 0;
@@ -79,12 +83,17 @@ public class SearchActivity extends AppCompatActivity {
     private int stepIndex = -1;
 
     private final List<String> steps = Arrays.asList(
-            "Step 1: Tilt your phone left or right to move between the guild letters on the map.",
-            "Step 2: Hold the selector on a letter until the progress bar fills to choose that guild.",
-            "Step 3: A random uncollected word from that guild will be selected for you.",
-            "Step 4: Press Play Word in the spelling screen to hear the word.",
-            "Step 5: Press Start Listening and spell the word aloud. You have 3 tries.",
-            "Step 6: If you spell it correctly, the word is saved in your dictionary."
+            "Step 1: Tilt your phone left or right to move the selector between the guild letters.",
+
+            "Step 2: Hold the selector still on a letter to choose it.",
+
+            "Step 3: You can then confirm the chosen guild and be redirected to the spelling bee game.",
+
+            "Step 4: Press the 'Play Word' button to hear the word before spelling.",
+
+            "Step 5: Press 'Start Listening' and say the word out loud. You have 3 tries.",
+
+            "Step 6: Spell the word correctly to save it to your dictionary."
     );
 
     private final SensorEventListener sensorListener = new SensorEventListener() {
@@ -122,15 +131,21 @@ public class SearchActivity extends AppCompatActivity {
         currentLetter           = findViewById(R.id.currentLetter);
         selectedLetterCenter    = findViewById(R.id.selectedLetterCenter);
         selectedLetterContainer = findViewById(R.id.selectedLetterContainer);
-        selectionProgress       = findViewById(R.id.selectionProgress);
-        mapOverlay              = findViewById(R.id.mapOverlay);
 
-        overlay           = findViewById(R.id.tutorialOverlay);
-        dim               = findViewById(R.id.tutorialDim);
-        card              = findViewById(R.id.tutorialCard);
-        tutorialTitle     = findViewById(R.id.tutorialTitle);
-        tutorialBody      = findViewById(R.id.tutorialBody);
-        rowSkipView       = findViewById(R.id.rowSkipView);
+        //test
+        selectionProgress = findViewById(R.id.selectionProgress);
+
+        overlay = findViewById(R.id.tutorialOverlay);
+        dim = findViewById(R.id.tutorialDim);
+        card = findViewById(R.id.tutorialCard);
+
+        tutorialTitle = findViewById(R.id.tutorialTitle);
+        tutorialBody = findViewById(R.id.tutorialBody);
+
+        tutorialImage = findViewById(R.id.tutorialImage);
+
+        rowSkipView = findViewById(R.id.rowSkipView);
+
         rowStepNavigation = findViewById(R.id.rowStepNavigation);
 
         View   btnClose = findViewById(R.id.btnClose);
@@ -140,7 +155,10 @@ public class SearchActivity extends AppCompatActivity {
         Button btnNext  = findViewById(R.id.btnNext);
 
         Button btnOpenDictionary = findViewById(R.id.btnOpenDictionary);
-        Button btnOpenTutorial   = findViewById(R.id.btnOpenTutorial);
+        Button btnOpenTutorial = findViewById(R.id.btnOpenTutorial);
+
+        View btnBack = findViewById(R.id.btnBack);
+        View btnNext = findViewById(R.id.btnNext);
 
         showTutorialIntro(true);
 
@@ -178,11 +196,56 @@ public class SearchActivity extends AppCompatActivity {
         resetSelectionProgress();
     }
 
-    // ------------------------------------------------------------------ //
-    //  Selection circle positioning
-    // ------------------------------------------------------------------ //
-    private void moveSelection() {
-        int drawableRes = letterDrawables[selectedIndex];
+    private void showTutorialIntro(boolean interactable) {
+        overlay.setVisibility(View.VISIBLE);
+        setOverlayInteractable(interactable);
+        tutorialImage.setVisibility(View.GONE);
+
+        tutorialTitle.setText("Tutorial");
+        tutorialBody.setText("Welcome! Want to view the tutorial?");
+
+        rowSkipView.setVisibility(View.VISIBLE);
+        rowStepNavigation.setVisibility(View.GONE);
+
+        stepIndex = -1;
+    }
+
+    private void showStep(int index) {
+        if (index < 0) {
+            showTutorialIntro(true);
+            return;
+        }
+
+        if (index >= steps.size()) {
+            hideTutorial();
+            return;
+        }
+
+        tutorialImage.setVisibility(View.VISIBLE);
+
+        // Update images based on step index
+        if (index == 0) {
+            tutorialImage.setImageResource(R.drawable.tilt1);
+        } else if (index == 1) {
+            tutorialImage.setImageResource(R.drawable.hold_still);
+        } else if (index == 2) {
+            tutorialImage.setVisibility(View.GONE);
+        } else if (index == 3) {
+            tutorialImage.setImageResource(R.drawable.play_word);
+        } else if (index == 4) {
+            tutorialImage.setImageResource(R.drawable.start_listening2);
+        } else if (index == 5) {
+            tutorialImage.setImageResource(R.drawable.speaking1);
+        }
+
+
+        overlay.setVisibility(View.VISIBLE);
+        setOverlayInteractable(true);
+
+        stepIndex = index;
+
+        tutorialTitle.setText("Tutorial (" + (index + 1) + "/" + steps.size() + ")");
+        tutorialBody.setText(steps.get(index));
 
         float[] screenPos = mapOverlay.getLetterScreenPosition(drawableRes);
         float screenCx = screenPos[0];
