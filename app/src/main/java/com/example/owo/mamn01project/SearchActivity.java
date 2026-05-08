@@ -47,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     private ImageView selectionCircle;
     private ImageView currentLetter;
     private MapOverlayView mapOverlay;
+    private ImageView tutorialImage;
 
     // Drawables in the same order as MapOverlayView.buildLetters()
     private final int[] letterDrawables = {
@@ -79,12 +80,12 @@ public class SearchActivity extends AppCompatActivity {
     private int stepIndex = -1;
 
     private final List<String> steps = Arrays.asList(
-            "Step 1: Tilt your phone left or right to move between the guild letters on the map.",
-            "Step 2: Hold the selector on a letter until the progress bar fills to choose that guild.",
-            "Step 3: A random uncollected word from that guild will be selected for you.",
-            "Step 4: Press Play Word in the spelling screen to hear the word.",
-            "Step 5: Press Start Listening and spell the word aloud. You have 3 tries.",
-            "Step 6: If you spell it correctly, the word is saved in your dictionary."
+            "Step 1: Tilt your phone left or right to move the selector between the guild letters.",
+            "Step 2: Hold the selector still on a letter to choose it.",
+            "Step 3: You can then confirm the chosen guild and be redirected to the spelling bee game.",
+            "Step 4: Press the 'Play Word' button to hear the word before spelling.",
+            "Step 5: Press 'Start Listening' and say the word out loud. You have 3 tries.",
+            "Step 6: Spell the word correctly to save it to your dictionary."
     );
 
     private final SensorEventListener sensorListener = new SensorEventListener() {
@@ -130,6 +131,7 @@ public class SearchActivity extends AppCompatActivity {
         card              = findViewById(R.id.tutorialCard);
         tutorialTitle     = findViewById(R.id.tutorialTitle);
         tutorialBody      = findViewById(R.id.tutorialBody);
+        tutorialImage     = findViewById(R.id.tutorialImage);
         rowSkipView       = findViewById(R.id.rowSkipView);
         rowStepNavigation = findViewById(R.id.rowStepNavigation);
 
@@ -199,6 +201,95 @@ public class SearchActivity extends AppCompatActivity {
         selectionCircle.setY(localCy - selectionCircle.getHeight() / 2f);
 
         currentLetter.setImageResource(drawableRes);
+    }
+
+    // ------------------------------------------------------------------ //
+    //  Tutorial
+    // ------------------------------------------------------------------ //
+    private void showTutorialIntro(boolean interactable) {
+        overlay.setVisibility(View.VISIBLE);
+        setOverlayInteractable(interactable);
+
+        tutorialImage.setVisibility(View.GONE);
+        tutorialTitle.setText("Tutorial");
+        tutorialBody.setText("Welcome! Want to view the tutorial?");
+
+        rowSkipView.setVisibility(View.VISIBLE);
+        rowStepNavigation.setVisibility(View.GONE);
+
+        stepIndex = -1;
+    }
+
+    private void showStep(int index) {
+        if (index < 0) {
+            showTutorialIntro(true);
+            return;
+        }
+        if (index >= steps.size()) {
+            hideTutorial();
+            return;
+        }
+
+        overlay.setVisibility(View.VISIBLE);
+        setOverlayInteractable(true);
+
+        stepIndex = index;
+
+        tutorialTitle.setText("Tutorial (" + (index + 1) + "/" + steps.size() + ")");
+        tutorialBody.setText(steps.get(index));
+
+        rowSkipView.setVisibility(View.GONE);
+        rowStepNavigation.setVisibility(View.VISIBLE);
+
+        // Show the relevant image for each step
+        switch (index) {
+            case 0:
+                tutorialImage.setVisibility(View.VISIBLE);
+                tutorialImage.setImageResource(R.drawable.tilt1);
+                break;
+            case 1:
+                tutorialImage.setVisibility(View.VISIBLE);
+                tutorialImage.setImageResource(R.drawable.hold_still);
+                break;
+            case 2:
+                tutorialImage.setVisibility(View.GONE);
+                break;
+            case 3:
+                tutorialImage.setVisibility(View.VISIBLE);
+                tutorialImage.setImageResource(R.drawable.play_word);
+                break;
+            case 4:
+                tutorialImage.setVisibility(View.VISIBLE);
+                tutorialImage.setImageResource(R.drawable.start_listening2);
+                break;
+            case 5:
+                tutorialImage.setVisibility(View.VISIBLE);
+                tutorialImage.setImageResource(R.drawable.speaking1);
+                break;
+            default:
+                tutorialImage.setVisibility(View.GONE);
+                break;
+        }
+
+        View   btnBack = findViewById(R.id.btnBack);
+        Button btnNext = findViewById(R.id.btnNext);
+        btnBack.setEnabled(index > 0);
+        btnBack.setAlpha(index > 0 ? 1f : 0.5f);
+        btnNext.setText(index == steps.size() - 1 ? "Done" : "Next");
+    }
+
+    private void hideTutorial() {
+        overlay.setVisibility(View.GONE);
+        stepIndex = -1;
+    }
+
+    private void setOverlayInteractable(boolean interactable) {
+        overlay.setClickable(interactable);
+        overlay.setFocusable(interactable);
+        overlay.setFocusableInTouchMode(interactable);
+        dim.setAlpha(interactable ? 1f : 0f);
+        card.setEnabled(interactable);
+        card.setAlpha(interactable ? 1f : 0.6f);
     }
 
     // ------------------------------------------------------------------ //
@@ -272,21 +363,17 @@ public class SearchActivity extends AppCompatActivity {
         String section   = letterValues[selectedIndex];
         String guildName = section + " Guild";
 
-        // Show the selected letter in the centre popup while the dialog is open
         selectedLetterCenter.setImageResource(letterDrawables[selectedIndex]);
         selectedLetterContainer.setVisibility(View.VISIBLE);
 
-        // Inflate our custom layout into a bare Dialog so we control every pixel
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_section_confirm);
 
-        // Transparent window background so our dark-green card shape shows cleanly
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }
 
-        // Wire up views
         TextView titleView   = dialog.findViewById(R.id.dialogTitle);
         TextView messageView = dialog.findViewById(R.id.dialogMessage);
         Button   btnNo       = dialog.findViewById(R.id.dialogBtnNo);
@@ -295,13 +382,11 @@ public class SearchActivity extends AppCompatActivity {
         titleView.setText("Catch a Letter?");
         messageView.setText("Do you want to catch a letter from the " + guildName + "?");
 
-        // YES — go to the spelling game
         btnYes.setOnClickListener(v -> {
             dialog.dismiss();
             startGame(section);
         });
 
-        // NO — stay on map, reset so player can pick again
         btnNo.setOnClickListener(v -> {
             dialog.dismiss();
             selectedLetterContainer.setVisibility(View.GONE);
@@ -309,7 +394,6 @@ public class SearchActivity extends AppCompatActivity {
             resetSelectionProgress();
         });
 
-        // Tapping outside = No
         dialog.setCancelable(true);
         dialog.setOnCancelListener(d -> {
             selectedLetterContainer.setVisibility(View.GONE);
@@ -335,54 +419,6 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = new Intent(SearchActivity.this, SpellingBeeActivity.class);
         intent.putExtras(b);
         startActivity(intent);
-    }
-
-    // ------------------------------------------------------------------ //
-    //  Tutorial
-    // ------------------------------------------------------------------ //
-    private void showTutorialIntro(boolean interactable) {
-        overlay.setVisibility(View.VISIBLE);
-        setOverlayInteractable(interactable);
-        tutorialTitle.setText("Tutorial");
-        tutorialBody.setText("Welcome! Want to view the tutorial?");
-        rowSkipView.setVisibility(View.VISIBLE);
-        rowStepNavigation.setVisibility(View.GONE);
-        stepIndex = -1;
-    }
-
-    private void showStep(int index) {
-        if (index < 0) { showTutorialIntro(true); return; }
-        if (index >= steps.size()) { hideTutorial(); return; }
-
-        overlay.setVisibility(View.VISIBLE);
-        setOverlayInteractable(true);
-        stepIndex = index;
-
-        tutorialTitle.setText("Tutorial (" + (index + 1) + "/" + steps.size() + ")");
-        tutorialBody.setText(steps.get(index));
-
-        rowSkipView.setVisibility(View.GONE);
-        rowStepNavigation.setVisibility(View.VISIBLE);
-
-        View   btnBack = findViewById(R.id.btnBack);
-        Button btnNext = findViewById(R.id.btnNext);
-        btnBack.setEnabled(index > 0);
-        btnBack.setAlpha(index > 0 ? 1f : 0.5f);
-        btnNext.setText(index == steps.size() - 1 ? "Done" : "Next");
-    }
-
-    private void hideTutorial() {
-        overlay.setVisibility(View.GONE);
-        stepIndex = -1;
-    }
-
-    private void setOverlayInteractable(boolean interactable) {
-        overlay.setClickable(interactable);
-        overlay.setFocusable(interactable);
-        overlay.setFocusableInTouchMode(interactable);
-        dim.setAlpha(interactable ? 1f : 0f);
-        card.setEnabled(interactable);
-        card.setAlpha(interactable ? 1f : 0.6f);
     }
 
     // ------------------------------------------------------------------ //
