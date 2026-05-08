@@ -76,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
 
             "Step 2: Hold the selector still on a letter to choose it.",
 
-            "Step 3: The guilds icon will appear automatically and redirect you to the spelling bee game.",
+            "Step 3: You can then confirm the chosen guild and be redirected to the spelling bee game.",
 
             "Step 4: Press the 'Play Word' button to hear the word before spelling.",
 
