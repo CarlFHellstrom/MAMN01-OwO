@@ -84,7 +84,7 @@ public class SearchActivity extends AppCompatActivity {
             "Step 2: Hold the selector still on a letter to choose it.",
             "Step 3: You can then confirm the chosen guild and be redirected to the spelling bee game.",
             "Step 4: Press the 'Play Word' button to hear the word before spelling.",
-            "Step 5: Press 'Start Listening' and say the word out loud. You have 3 tries.",
+            "Step 5: Press 'Start Spelling' and say the word out loud. You have 3 tries.",
             "Step 6: Spell the word correctly to save it to your dictionary."
     );
 

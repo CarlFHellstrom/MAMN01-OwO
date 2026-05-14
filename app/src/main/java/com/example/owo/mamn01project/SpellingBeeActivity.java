@@ -1,9 +1,16 @@
 package com.example.owo.mamn01project;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +45,8 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
     private LinearLayout gameLayout;
     private LinearLayout endLayout;
+
+    private LinearLayout startSpeakingOverlay;
     private Word word;
     private int tries = 3;
     private TextToSpeech tts;
@@ -72,6 +81,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
             endLayout = findViewById(R.id.endLayout);
             gameLayout = findViewById(R.id.gameLayout);
+            startSpeakingOverlay = findViewById(R.id.startSpeakingOverlay);
 
             tts = new TextToSpeech(this, i -> {
                 if (i != TextToSpeech.ERROR) {
@@ -129,6 +139,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private void onStartSpeak() {
         speakButton.setEnabled(false);
         listenButton.setEnabled(false);
+        startSpeakingOverlay.setVisibility(VISIBLE);
 
         speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.sage_green));
     }
@@ -136,6 +147,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private void onSpeakError(String errorString) {
         speakButton.setEnabled(true);
         listenButton.setEnabled(true);
+        startSpeakingOverlay.setVisibility(GONE);
         feedbackGenerator.playError();
 
         speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.forest_green));
@@ -145,6 +157,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private void onFinishedSpeak(Word guessedWord) {
         speakButton.setEnabled(true);
         listenButton.setEnabled(true);
+        startSpeakingOverlay.setVisibility(GONE);
         speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.forest_green));
 
         if (guessedWord.equals(word)) {
@@ -160,13 +173,31 @@ public class SpellingBeeActivity extends AppCompatActivity {
             won = true;
             feedbackGenerator.playFanfare();
 
-            gameLayout.setVisibility(View.GONE);
-            endLayout.setVisibility(View.VISIBLE);
+            gameLayout.setVisibility(GONE);
+            endLayout.setVisibility(VISIBLE);
 
         } else {
             // Player Guessed Incorrectly
-            playerGuess.setText("Incorrect: " + guessedWord);
-            playerGuess.setTextColor(Color.RED);
+            SpannableString feedback = generateLetterFeedback(word.toString(), guessedWord.toString());
+            SpannableString fullText = new SpannableString("Try again: " + feedback);
+
+            // Copy spans from feedback into full text
+            Spanned spannedFeedback = feedback;
+            Object[] spans = spannedFeedback.getSpans(0, feedback.length(), Object.class);
+
+            for (Object span : spans) {
+                int start = spannedFeedback.getSpanStart(span);
+                int end = spannedFeedback.getSpanEnd(span);
+
+                fullText.setSpan(
+                        span,
+                        start + "Try again: ".length(),
+                        end + "Try again: ".length(),
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+
+            playerGuess.setText(fullText);
             tries -= 1;
             if(tries <= 0) {
                 // Player Loses
@@ -179,8 +210,8 @@ public class SpellingBeeActivity extends AppCompatActivity {
                 won = false;
                 feedbackGenerator.playFailure();
 
-                gameLayout.setVisibility(View.GONE);
-                endLayout.setVisibility(View.VISIBLE);
+                gameLayout.setVisibility(GONE);
+                endLayout.setVisibility(VISIBLE);
             } else if (tries == 1) {
                 triesLeft.setText("1 try left!");
                 feedbackGenerator.playError();
@@ -193,6 +224,42 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
     }
 
+    private SpannableString generateLetterFeedback(String targetWord, String guessedWord) {
+        String target = targetWord.toUpperCase();
+        String guess = guessedWord.toUpperCase();
+
+        StringBuilder raw = new StringBuilder();
+        int errorIndex = -1;
+
+        for (int i = 0; i < target.length(); i++) {
+            if (i >= guess.length()) {
+                raw.append('ˍ');
+            } else if (target.charAt(i) == guess.charAt(i)) {
+                raw.append(target.charAt(i));
+            } else {
+                raw.append(guess.charAt(i));
+                errorIndex = i;
+
+                for (int j = i + 1; j < target.length(); j++) {
+                    raw.append('ˍ');
+                }
+                break;
+            }
+        }
+
+        SpannableString spannable = new SpannableString(raw.toString());
+
+        if (errorIndex != -1) {
+            spannable.setSpan(
+                    new ForegroundColorSpan(Color.RED),
+                    errorIndex,
+                    errorIndex + 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+
+        return spannable;
+    }
     private void onListenButtonClick() {
         String wordString = word.toString();
         tts.speak(wordString, TextToSpeech.QUEUE_FLUSH, null, "SpellingBeeWord");
