@@ -1,5 +1,8 @@
 package com.example.owo.mamn01project;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -42,6 +45,8 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
     private LinearLayout gameLayout;
     private LinearLayout endLayout;
+
+    private LinearLayout startSpeakingOverlay;
     private Word word;
     private int tries = 3;
     private TextToSpeech tts;
@@ -76,6 +81,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
             endLayout = findViewById(R.id.endLayout);
             gameLayout = findViewById(R.id.gameLayout);
+            startSpeakingOverlay = findViewById(R.id.startSpeakingOverlay);
 
             tts = new TextToSpeech(this, i -> {
                 if (i != TextToSpeech.ERROR) {
@@ -133,6 +139,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private void onStartSpeak() {
         speakButton.setEnabled(false);
         listenButton.setEnabled(false);
+        startSpeakingOverlay.setVisibility(VISIBLE);
 
         speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.sage_green));
     }
@@ -140,6 +147,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private void onSpeakError(String errorString) {
         speakButton.setEnabled(true);
         listenButton.setEnabled(true);
+        startSpeakingOverlay.setVisibility(GONE);
         feedbackGenerator.playError();
 
         speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.forest_green));
@@ -149,6 +157,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
     private void onFinishedSpeak(Word guessedWord) {
         speakButton.setEnabled(true);
         listenButton.setEnabled(true);
+        startSpeakingOverlay.setVisibility(GONE);
         speakButton.setBackgroundTintList(getResources().getColorStateList(R.color.forest_green));
 
         if (guessedWord.equals(word)) {
@@ -164,21 +173,13 @@ public class SpellingBeeActivity extends AppCompatActivity {
             won = true;
             feedbackGenerator.playFanfare();
 
-            gameLayout.setVisibility(View.GONE);
-            endLayout.setVisibility(View.VISIBLE);
+            gameLayout.setVisibility(GONE);
+            endLayout.setVisibility(VISIBLE);
 
         } else {
             // Player Guessed Incorrectly
             SpannableString feedback = generateLetterFeedback(word.toString(), guessedWord.toString());
             SpannableString fullText = new SpannableString("Try again: " + feedback);
-
-            // Make "Try again: " red
-            fullText.setSpan(
-                    new ForegroundColorSpan(Color.RED),
-                    0,
-                    "Try again: ".length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
 
             // Copy spans from feedback into full text
             Spanned spannedFeedback = feedback;
@@ -209,8 +210,8 @@ public class SpellingBeeActivity extends AppCompatActivity {
                 won = false;
                 feedbackGenerator.playFailure();
 
-                gameLayout.setVisibility(View.GONE);
-                endLayout.setVisibility(View.VISIBLE);
+                gameLayout.setVisibility(GONE);
+                endLayout.setVisibility(VISIBLE);
             } else if (tries == 1) {
                 triesLeft.setText("1 try left!");
                 feedbackGenerator.playError();
@@ -232,7 +233,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
 
         for (int i = 0; i < target.length(); i++) {
             if (i >= guess.length()) {
-                raw.append('_');
+                raw.append('ˍ');
             } else if (target.charAt(i) == guess.charAt(i)) {
                 raw.append(target.charAt(i));
             } else {
@@ -240,7 +241,7 @@ public class SpellingBeeActivity extends AppCompatActivity {
                 errorIndex = i;
 
                 for (int j = i + 1; j < target.length(); j++) {
-                    raw.append('_');
+                    raw.append('ˍ');
                 }
                 break;
             }
